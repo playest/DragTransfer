@@ -11,36 +11,36 @@ Hooks.once('init', () => {
     registerSettings();
 });
 
-function isAlt() {
-    // check if Alt and only Alt is being pressed during the drop event.
-    const alts = new Set(["Alt", "AltLeft"]);
-    return (game.keyboard.downKeys.size == 1 && game.keyboard.downKeys.intersects(alts));
-}
-
-function checkCompatible(actorTypeName1, actorTypeName2) {
-    console.info('DragNTransfer - Check Compatibility: Dragging Item:"' + String(dragSource.data.type) + '" from sourceActor.data.type:"' + String(actorTypeName1) + '" to dragTarget.data.type:"' + String(actorTypeName2) + '".');
-
-    const transferBetweenSameTypeActors = game.settings.get('DragTransfer', 'actorTransferSame');
-    if(transferBetweenSameTypeActors && actorTypeName1 == actorTypeName2) {
-        return true;
-    }
-    try {
-        const transferPairs = JSON.parse("{" + game.settings.get('DragTransfer', 'actorTransferPairs') + "}");
-        const withActorTypeName1 = transferPairs[actorTypeName1];
-        const withActorTypeName2 = transferPairs[actorTypeName2];
-        if(Array.isArray(withActorTypeName1) && withActorTypeName1.indexOf(actorTypeName2) !== -1) return true;
-        if(Array.isArray(withActorTypeName2) && withActorTypeName2.indexOf(actorTypeName1) !== -1) return true;
-        if(withActorTypeName1 == actorTypeName2) return true;
-        if(withActorTypeName2 == actorTypeName1) return true;
-    }
-    catch(err) {
-        console.error('DragTransfer: ', err.message);
-        ui.notifications.error('DragTransfer: ' + err.message);
-    }
-    return false;
-};
-
 Hooks.on('dropActorSheetData', (dragTarget, sheet, dragSource, user) => {
+    function isAlt() {
+        // check if Alt and only Alt is being pressed during the drop event.
+        const alts = new Set(["Alt", "AltLeft"]);
+        return (game.keyboard.downKeys.size == 1 && game.keyboard.downKeys.intersects(alts));
+    }
+    
+    function checkCompatible(actorTypeName1, actorTypeName2) {
+        console.info('DragNTransfer - Check Compatibility: Dragging Item:"' + String(dragSource.data.type) + '" from sourceActor.data.type:"' + String(actorTypeName1) + '" to dragTarget.data.type:"' + String(actorTypeName2) + '".');
+    
+        const transferBetweenSameTypeActors = game.settings.get('DragTransfer', 'actorTransferSame');
+        if(transferBetweenSameTypeActors && actorTypeName1 == actorTypeName2) {
+            return true;
+        }
+        try {
+            const transferPairs = JSON.parse("{" + game.settings.get('DragTransfer', 'actorTransferPairs') + "}");
+            const withActorTypeName1 = transferPairs[actorTypeName1];
+            const withActorTypeName2 = transferPairs[actorTypeName2];
+            if(Array.isArray(withActorTypeName1) && withActorTypeName1.indexOf(actorTypeName2) !== -1) return true;
+            if(Array.isArray(withActorTypeName2) && withActorTypeName2.indexOf(actorTypeName1) !== -1) return true;
+            if(withActorTypeName1 == actorTypeName2) return true;
+            if(withActorTypeName2 == actorTypeName1) return true;
+        }
+        catch(err) {
+            console.error('DragTransfer: ', err.message);
+            ui.notifications.error('DragTransfer: ' + err.message);
+        }
+        return false;
+    }
+
     if(isAlt()) {
         return;  // ignore Drag'N'Transfer when Alt is pressed to drop.
     }
