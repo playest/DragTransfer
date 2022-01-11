@@ -36,10 +36,13 @@ Hooks.on('dropActorSheetData', (dragTarget, sheet, dragSource, user) => {
 
             function checkCompatable(actor1, actor2) {
                 console.info('DragNTransfer - Check Compatability: Dragging Item:"' + String(dragSource.data.type) + '" from sourceActor.data.type:"' + String(actor1) + '" to dragTarget.data.type:"' + String(actor2) + '".');
-                if(actor1 == actor2) return true;
+
+                const transferBetweenSameTypeActors = game.settings.get('DragTransfer', 'actorTransferSame');
+                if(transferBetweenSameTypeActors && actor1 == actor2) {
+                    return true;
+                }
                 try {
                     const transferPairs = JSON.parse("{" + game.settings.get('DragTransfer', 'actorTransferPairs') + "}");
-
                     if(transferPairs[actor1] == actor2) return true;
                     if(transferPairs[actor2] == actor1) return true;
                 }
