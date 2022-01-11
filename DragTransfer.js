@@ -34,8 +34,8 @@ Hooks.on('dropActorSheetData', (dragTarget, sheet, dragSource, user) => {
         if(sourceActor) {
             /* if both source and target have the same type then allow deleting original item. this is a safety check because some game systems may allow dropping on targets that don't actually allow the GM or player to see the inventory, making the item inaccessible. */
 
-            function checkCompatable(actorTypeName1, actorTypeName2) {
-                console.info('DragNTransfer - Check Compatability: Dragging Item:"' + String(dragSource.data.type) + '" from sourceActor.data.type:"' + String(actorTypeName1) + '" to dragTarget.data.type:"' + String(actorTypeName2) + '".');
+            function checkCompatible(actorTypeName1, actorTypeName2) {
+                console.info('DragNTransfer - Check Compatibility: Dragging Item:"' + String(dragSource.data.type) + '" from sourceActor.data.type:"' + String(actorTypeName1) + '" to dragTarget.data.type:"' + String(actorTypeName2) + '".');
 
                 const transferBetweenSameTypeActors = game.settings.get('DragTransfer', 'actorTransferSame');
                 if(transferBetweenSameTypeActors && actorTypeName1 == actorTypeName2) {
@@ -57,7 +57,7 @@ Hooks.on('dropActorSheetData', (dragTarget, sheet, dragSource, user) => {
                 return false;
             };
 
-            if(checkCompatable(sourceActor.data.type, dragTarget.data.type)) {
+            if(checkCompatible(sourceActor.data.type, dragTarget.data.type)) {
                 if(sourceActor.deleteEmbeddedDocuments != undefined) {
                     sourceActor.deleteEmbeddedDocuments("Item", [dragSource.data._id]);
                 }
