@@ -49,6 +49,9 @@ let dragTransferTransaction = {};
               <form>
                 <div class="form-group">
                   <input type="number" class="transferedQuantity" value="${dragTransferData.originalQuantity}"></input>
+                  <button onclick="this.parentElement.querySelector('.transferedQuantity').value = '1'">One</button>
+                  <button onclick="this.parentElement.querySelector('.transferedQuantity').value = '${Math.round(dragTransferData.originalQuantity / 2)}'">Half</button>
+                  <button onclick="this.parentElement.querySelector('.transferedQuantity').value = '${dragTransferData.originalQuantity}'">Max</button>
                 </div>
               </form>`,
             buttons: {
@@ -63,6 +66,9 @@ let dragTransferTransaction = {};
                             const newOriginalQuantity = dragTransferData.originalQuantity - transferedQuantity;
                             originalItem.update({"data.quantity": newOriginalQuantity});
                             createdItem.update({"data.quantity": transferedQuantity});
+                            if("dragTransfer" in createdItem.data.data) {
+                                delete createdItem.data.data.dragTransfer; // remove module info that is not needed anymore
+                            }
                             if(newOriginalQuantity <= 0) {
                                 if(originalActor.deleteEmbeddedDocuments != undefined) {
                                     originalActor.deleteEmbeddedDocuments("Item", [dragTransferData.originalItemId]);
@@ -123,9 +129,9 @@ let dragTransferTransaction = {};
                 /* if both source and target have the same type then allow deleting original item. this is a safety check because some game systems may allow dropping on targets that don't actually allow the GM or player to see the inventory, making the item inaccessible. */
                 if(checkCompatible(sourceActor.data.type, dragTargetActor.data.type, futureItem)) {
                     const originalQuantity = futureItem.data.data.quantity;
-                    futureItem.data.data.quantity = 0; // we'll set it to the right value later after the user has said how many they want to transfer
                     if(originalQuantity > 1) {
                         // It seems that custom fields are only kept if put in .data.data
+                        futureItem.data.data.quantity = 0; // we'll set it to the right value later after the user has said how many they want to transfer
                         const originalItem = game.actors.get(futureItem.actorId).items.get(futureItem.data._id);
                         futureItem.data.data.dragTransfer = {
                             originalActorId: futureItem.actorId,
