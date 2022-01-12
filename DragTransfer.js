@@ -99,8 +99,8 @@ let dragTransferTransaction = {};
                   <input type="number" class="transferedQuantity" value="${dragTransferData.originalQuantity}" />
                   <button onclick="this.parentElement.querySelector('.transferedQuantity').value = '1'">One</button>
                   <button onclick="this.parentElement.querySelector('.transferedQuantity').value = '${Math.round(dragTransferData.originalQuantity / 2)}'">Half</button>
-                  <button onclick="this.parentElement.querySelector('.transferedQuantity').value = '${dragTransferData.originalQuantity}'">Max</button><br />
-                  <input type="checkbox" class="stack" checked="checked" /> Stack items of the same type
+                  <button onclick="this.parentElement.querySelector('.transferedQuantity').value = '${dragTransferData.originalQuantity}'">Max</button>
+                  <label style="flex: none;"><input style="vertical-align: middle;" type="checkbox" class="stack" checked="checked" /> Stack items of the same type</label>
                 </div>
               </form>`,
             buttons: {
