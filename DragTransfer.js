@@ -125,17 +125,17 @@ let dragTransferTransaction = {};
         transferDialog.render(true);
     }
 
-    function showCurrencyTransferDialog() {
+    function showCurrencyTransferDialog(sourceActorId, targetActorId) {
         let transferDialog = new Dialog({
             title: 'How much do you want to move?',
             content: `
               <form>
                 <div class="form-group">
-                  Platinum: <input type="number" class="currency platinum" value="0" />
-                  Gold: <input type="number" class="currency gold" value="0" />
-                  Electrum: <input type="number" class="currency electrum" value="0" />
-                  Silver: <input type="number" class="currency silver" value="0" />
-                  Copper: <input type="number" class="currency copper" value="1" />
+                  Platinum: <input type="number" class="currency pp" value="0" />
+                  Gold: <input type="number" class="currency gp" value="0" />
+                  Electrum: <input type="number" class="currency ep" value="0" />
+                  Silver: <input type="number" class="currency sp" value="0" />
+                  Copper: <input type="number" class="currency cp" value="1" />
                 </div>
               </form>`,
             buttons: {
@@ -143,7 +143,33 @@ let dragTransferTransaction = {};
                     //icon: "<i class='fas fa-check'></i>",
                     label: `Transfer`,
                     callback: html => {
+                        let currencies = ["pp", "gp", "ep", "sp", "cp"];
                         console.log("Transfer currency:", html.find('input.currency'));
+                        //game.actors.get("d776K0YD9NBVwleL").data.data.currency
+                        //game.actors.get(targetActorId).update({"data.currency.cp": 12});
+
+                        const sourceActor = game.actors.get(sourceActorId);
+
+                        let errors = [];
+                        for(let c of currencies) {
+                            const amount = parseInt(html.find("." + c).val(), 10);
+                            if(amount > sourceActor.data.data.currency[c]) {
+                                errors.push(c);
+                            }
+                        }
+
+                        if(errors.length !== 0) {
+                            ui.notifications.error("DragTransfer: you don't have enough of the following currencies " + errors.join(", "));
+                        }
+                        else {
+                            const targetActor = game.actors.get(targetActorId);
+                            for(let c of currencies) {
+                                const amount = parseInt(html.find("." + c).val(), 10);
+                                const key = "data.currency." + c;
+                                sourceActor.update({[key]: sourceActor.data.data.currency[c] - amount});
+                                targetActor.update({[key]: targetActor.data.data.currency[c] + amount}); // key is between [] to force its evaluation
+                            }
+                        }
                     }
                 }
             },
@@ -200,7 +226,10 @@ let dragTransferTransaction = {};
                 if(checkCompatible(sourceActor.data.type, dragTargetActor.data.type, futureItem)) {
                     const originalQuantity = futureItem.data.data.quantity;
                     if(futureItem.data.name === "Currency") {
-                        showCurrencyTransferDialog();
+                        console.log(dragTargetActor, sheet, futureItem);
+                        const targetActorId = dragTargetActor.data._id;
+                        const sourceActorId = futureItem.actorId;
+                        showCurrencyTransferDialog(sourceActorId, targetActorId);
                         return false;
                     }
                     else if(originalQuantity >= 1) {
