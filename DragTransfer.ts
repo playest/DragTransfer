@@ -67,36 +67,33 @@ interface DragTransferData {
         }
     }
 
-    function transferItem(originalActor: FoundryVTT.Actor, dragTransferData: DragTransferData, createdItem: FoundryVTT.Item<{dragTransfer: DragTransferData}>, transferedQuantity: number, stackItems: boolean) {
-        const originalItem = originalActor.items.get(dragTransferData.originalItemId);
+    function transferItem(originalActor: FoundryVTT.Actor, targetActorId: FoundryVTT.ActorId, originalItemId: FoundryVTT.ItemId, createdItem: FoundryVTT.FutureItem, originalQuantity: number, transferedQuantity: number, stackItems: boolean) {
+        const originalItem = originalActor.items.get(originalItemId);
+        const targetActor = game.actors.get(targetActorId)!;
         if(originalItem == undefined) {
-            console.error("Could not find the source item", dragTransferData.originalItemId);
+            console.error("Could not find the source item", originalItemId);
             return;
         }
 
-        if("dragTransfer" in createdItem.data.data) {
-            createdItem.update({ "data.-=dragTransfer": null });
-            //delete createdItem.data.data.dragTransfer; // remove module info that is not needed anymore
-        }
-
-        if(transferedQuantity > 0 && transferedQuantity <= dragTransferData.originalQuantity) {
-            const newOriginalQuantity = dragTransferData.originalQuantity - transferedQuantity;
+        if(transferedQuantity > 0 && transferedQuantity <= originalQuantity) {
+            const newOriginalQuantity = originalQuantity - transferedQuantity;
             let stacked = false; // will be true if a stack of item has been found and items have been stacked in it
             if(stackItems) {
-                createdItem.parent.items.forEach(i => {
+                targetActor.items.forEach(i => {
                     console.log("diff", i, createdItem, "=", diffObject(i, createdItem));
                 });
-                const potentialStacks = createdItem.parent.items.filter(i => i.name == createdItem.name && diffObject(createdItem, i) && i.data._id !== createdItem.data._id);
+                const potentialStacks = targetActor.items.filter(i => i.name == originalItem.name && diffObject(createdItem, i) && i.data._id !== createdItem.data._id);
                 if(potentialStacks.length >= 1) {
                     potentialStacks[0].update({ "data.quantity": potentialStacks[0].data.data.quantity + transferedQuantity });
-                    deleteItemIfZero(createdItem.parent, createdItem.data._id);
+                    deleteItemIfZero(targetActor, createdItem.data._id);
                     stacked = true;
                 }
             }
 
             originalItem.update({ "data.quantity": newOriginalQuantity }).then((i) => deleteItemIfZero(i.parent, i.data._id));
             if(stacked === false) {
-                createdItem.update({ "data.quantity": transferedQuantity }).then((i) => deleteItemIfZero(i.parent, i.data._id));
+                createdItem.data.data.quantity = transferedQuantity;
+                targetActor.createEmbeddedDocuments("Item", [createdItem.data])
             }
         }
         else {
@@ -110,7 +107,7 @@ interface DragTransferData {
         //game.actors.get("d776K0YD9NBVwleL").data.data.currency
         //game.actors.get(targetActorId).update({"data.currency.cp": 12});
 
-        const sourceActor = game.actors.get(sourceActorId);
+        const sourceActor = game.actors.get(sourceActorId)!;
 
         let errors = [];
         for(let c of currencies) {
@@ -124,7 +121,7 @@ interface DragTransferData {
             ui.notifications.error("DragTransfer: you don't have enough of the following currencies " + errors.join(", "));
         }
         else {
-            const targetActor = game.actors.get(targetActorId);
+            const targetActor = game.actors.get(targetActorId)!;
             for(let c of currencies) {
                 const amount = parseInt(html.find("." + c).val(), 10);
                 const key = "data.currency." + c;
@@ -137,17 +134,17 @@ interface DragTransferData {
     /**
     dragTransferData: { originalActorId, originalItemId, originalQuantity, newItemId }
     */
-    function showItemTransferDialog(dragTransferData: DragTransferData, createdItem: FoundryVTT.Item<{dragTransfer: DragTransferData}>) {
-        const originalActor = game.actors.get(dragTransferData.originalActorId);
+    function showItemTransferDialog(originalQuantity: number, originalActorId: FoundryVTT.ActorId, targetActorId: FoundryVTT.ActorId, originalItemId: FoundryVTT.ItemId, createdItem: FoundryVTT.FutureItem) {
+        const originalActor = game.actors.get(originalActorId)!;
         let transferDialog = new Dialog({
             title: 'How many items do you want to move?',
             content: `
               <form>
                 <div class="form-group">
-                  <input type="number" class="transferedQuantity" value="${dragTransferData.originalQuantity}" />
+                  <input type="number" class="transferedQuantity" value="${originalQuantity}" />
                   <button onclick="this.parentElement.querySelector('.transferedQuantity').value = '1'">One</button>
-                  <button onclick="this.parentElement.querySelector('.transferedQuantity').value = '${Math.round(dragTransferData.originalQuantity / 2)}'">Half</button>
-                  <button onclick="this.parentElement.querySelector('.transferedQuantity').value = '${dragTransferData.originalQuantity}'">Max</button>
+                  <button onclick="this.parentElement.querySelector('.transferedQuantity').value = '${Math.round(originalQuantity / 2)}'">Half</button>
+                  <button onclick="this.parentElement.querySelector('.transferedQuantity').value = '${originalQuantity}'">Max</button>
                   <label style="flex: none;"><input style="vertical-align: middle;" type="checkbox" class="stack" checked="checked" /> Stack items of the same type</label>
                 </div>
               </form>`,
@@ -158,16 +155,12 @@ interface DragTransferData {
                     callback: html => {
                         const transferedQuantity = parseInt(html.find('input.transferedQuantity').val(), 10);
                         const stackItems = html.find('input.stack').is(":checked");
-                        transferItem(originalActor, dragTransferData, createdItem, transferedQuantity, stackItems);
+                        transferItem(originalActor, targetActorId,originalItemId, createdItem, originalQuantity, transferedQuantity, stackItems);
                     }
                 }
             },
             default: 'transfer',
             close: html => {
-                if("dragTransfer" in createdItem.data.data) {
-                    createdItem.update({ "data.-=dragTransfer": null });
-                    //delete createdItem.data.data.dragTransfer; // remove module info that is not needed anymore
-                }
             }
         });
         transferDialog.render(true);
@@ -206,30 +199,6 @@ interface DragTransferData {
         registerSettings();
     });
 
-    /*
-    options: {"temporary":false, "renderSheet":false, "render":true}
-    */
-    Hooks.on('createItem', (createdItem: FoundryVTT.Item<{dragTransfer: DragTransferData}>, options, userId) => {
-        return;
-        console.log("createItem", createdItem, options, userId);
-        if("dragTransfer" in createdItem.data.data) {
-            console.log("dragTransfer info detected on created object", createdItem.data.data.dragTransfer);
-            const dtd = createdItem.data.data.dragTransfer;
-            const dtd2 = {
-                originalActorId: dtd.originalActorId,
-                originalItemId: dtd.originalItemId,
-                originalQuantity: dtd.originalQuantity,
-                newItemId: createdItem.data._id
-            }
-            if(dtd.originalQuantity <= 1) {
-                transferItem(game.actors.get(dtd.originalActorId), dtd2, createdItem, 1, true);
-            }
-            else {
-                showItemTransferDialog(dtd2, createdItem);
-            }
-        }
-    });
-
     Hooks.on('dropActorSheetData', (dragTargetActor, sheet, futureItem) => {
         if(isAlt()) {
             return;  // ignore Drag'N'Transfer when Alt is pressed to drop.
@@ -248,22 +217,16 @@ interface DragTransferData {
                 /* if both source and target have the same type then allow deleting original item. this is a safety check because some game systems may allow dropping on targets that don't actually allow the GM or player to see the inventory, making the item inaccessible. */
                 if(checkCompatible(sourceActor.data.type, dragTargetActor.data.type, futureItem)) {
                     const originalQuantity = futureItem.data.data.quantity;
+                    const targetActorId = dragTargetActor.data._id;
+                    const sourceActorId = futureItem.actorId;
                     if(futureItem.data.name === "Currency") {
                         console.log(dragTargetActor, sheet, futureItem);
-                        const targetActorId = dragTargetActor.data._id;
-                        const sourceActorId = futureItem.actorId;
                         showCurrencyTransferDialog(sourceActorId, targetActorId);
                         return false;
                     }
                     else if(originalQuantity >= 1) {
-                        // It seems that custom fields are only kept if put in .data.data
-                        futureItem.data.data.quantity = 0; // we'll set it to the right value later after the user has said how many they want to transfer
-                        const originalItem = game.actors.get(futureItem.actorId).items.get(futureItem.data._id);
-                        futureItem.data.data.dragTransfer = {
-                            originalActorId: futureItem.actorId,
-                            originalQuantity: originalQuantity,
-                            originalItemId: originalItem.data._id
-                        };
+                        showItemTransferDialog(originalQuantity, sourceActorId, targetActorId, futureItem.data._id, futureItem);
+                        return false;
                     }
                     else {
                         deleteItem(sourceActor, futureItem.data._id);

@@ -1,5 +1,10 @@
 global {
-    export declare const game: any;
+    export declare const game: {
+        actors: Map<FoundryVTT.ActorId, FoundryVTT.Actor>,
+        keyboard: any,
+        settings: any,
+        i18n: any,
+    };
     const ui: any;
     function diffObject(o1: Record<string, any>, o2:Record<string, any>): Record<string, any>;
     interface Map<K, V> {
@@ -47,6 +52,7 @@ export namespace FoundryVTT {
         data: {
             data: FutureItemDataData & More,
             name: string,
+            quantity: number,
             type: "class" | "tool" | "feat" | "loot",
             _id: ItemId
         }
@@ -73,8 +79,13 @@ export namespace FoundryVTT {
         items: Map<ItemId, Item>,
         data : {
             _id: ActorId,
-            type: ActorType;
-        }
+            type: ActorType,
+            data: {
+                currency: Record<string, number>
+            }
+        },
+        createEmbeddedDocuments(type: "Item", items: FutureItem["data"][]): void,
+        update(pathsAndValues: Record<string, unknown>),
     }
 
     type DocumentId = ItemId;
