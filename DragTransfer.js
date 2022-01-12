@@ -54,6 +54,38 @@ let dragTransferTransaction = {};
         }
     }
 
+    function transfer(originalActor, dragTransferData, createdItem, transferedQuantity, stackItems) {
+        const originalItem = originalActor.items.get(dragTransferData.originalItemId);
+        if("dragTransfer" in createdItem.data.data) {
+            createdItem.update({"data.-=dragTransfer": null});
+            delete createdItem.data.data.dragTransfer; // remove module info that is not needed anymore
+        }
+
+        if(transferedQuantity > 0 && transferedQuantity <= dragTransferData.originalQuantity) {
+            const newOriginalQuantity = dragTransferData.originalQuantity - transferedQuantity;
+            let stacked = false; // will be true if a stack of item has been found and items have been stacked in it
+            if(stackItems) {
+                createdItem.parent.items.forEach(i => {
+                    console.log("diff", i, createdItem, "=", diffObject(i, createdItem));
+                });
+                const potentialStacks = createdItem.parent.items.filter(i => i.name == createdItem.name && diffObject(createdItem, i) && i.data._id !== createdItem.data._id);
+                if(potentialStacks.length >= 1) {
+                    potentialStacks[0].update({"data.quantity": potentialStacks[0].data.data.quantity + transferedQuantity});
+                    deleteItemIfZero(createdItem.parent, createdItem.data._id);
+                    stacked = true;
+                }
+            }
+            
+            originalItem.update({"data.quantity": newOriginalQuantity}).then((i) => deleteItemIfZero(i.parent, i.data._id));
+            if(stacked === false) {
+                createdItem.update({"data.quantity": transferedQuantity}).then((i) => deleteItemIfZero(i.parent, i.data._id));
+            }
+        }
+        else {
+            ui.notifications.error('DragTransfer: could not transfer ' + transferedQuantity + " items");
+        }
+    }
+
     /**
     dragTransferData: { originalActorId, originalItemId, originalQuantity, newItemId }
     */
@@ -76,37 +108,9 @@ let dragTransferTransaction = {};
                     //icon: "<i class='fas fa-check'></i>",
                     label: `Transfer`,
                     callback: html => {
-                        const originalItem = originalActor.items.get(dragTransferData.originalItemId);
-                        if("dragTransfer" in createdItem.data.data) {
-                            createdItem.update({"data.-=dragTransfer": null});
-                            delete createdItem.data.data.dragTransfer; // remove module info that is not needed anymore
-                        }
                         const transferedQuantity = parseInt(html.find('input.transferedQuantity').val(), 10);
-                        const stackItems = html.find('input.stack').val() == "on";
-                        if(transferedQuantity > 0 && transferedQuantity <= dragTransferData.originalQuantity) {
-                            const newOriginalQuantity = dragTransferData.originalQuantity - transferedQuantity;
-                            let stacked = false; // will be true if a stack of item has been found and items have been stacked in it
-                            if(stackItems) {
-                                createdItem.parent.items.forEach(i => {
-                                    console.log("diff", i, createdItem, "=", diffObject(i, createdItem));
-                                });
-                                const potentialStacks = createdItem.parent.items.filter(i => i.name == createdItem.name && diffObject(createdItem, i) && i.data._id !== createdItem.data._id);
-                                console.log("potentialStacks", potentialStacks);
-                                if(potentialStacks.length >= 1) {
-                                    potentialStacks[0].update({"data.quantity": potentialStacks[0].data.data.quantity + transferedQuantity});
-                                    deleteItemIfZero(createdItem.parent, createdItem.data._id);
-                                    stacked = true;
-                                }
-                            }
-                            
-                            originalItem.update({"data.quantity": newOriginalQuantity}).then((i) => deleteItemIfZero(i.parent, i.data._id));
-                            if(stacked === false) {
-                                createdItem.update({"data.quantity": transferedQuantity}).then((i) => deleteItemIfZero(i.parent, i.data._id));
-                            }
-                        }
-                        else {
-                            ui.notifications.error('DragTransfer: could not transfer ' + transferedQuantity + " items");
-                        }
+                        const stackItems = html.find('input.stack').is(":checked");
+                        transfer(originalActor, dragTransferData, createdItem, transferedQuantity, stackItems);
                     }
                 }
             },
@@ -116,7 +120,6 @@ let dragTransferTransaction = {};
                     createdItem.update({"data.-=dragTransfer": null});
                     delete createdItem.data.data.dragTransfer; // remove module info that is not needed anymore
                 }
-                //deleteItemIfZero(createdItem.parent, createdItem.data._id);
             }
         });
         transferDialog.render(true);
@@ -140,7 +143,12 @@ let dragTransferTransaction = {};
                 originalQuantity: dtd.originalQuantity,
                 newItemId: createdItem.data._id
             }
-            showTransferDialog(dtd2, createdItem);
+            if(dtd.originalQuantity <= 1) {
+                transfer(game.actors.get(dtd.originalActorId), dtd2, createdItem, 1, true);
+            }
+            else {
+                showTransferDialog(dtd2, createdItem);
+            }
         }
     });
 
@@ -162,7 +170,7 @@ let dragTransferTransaction = {};
                 /* if both source and target have the same type then allow deleting original item. this is a safety check because some game systems may allow dropping on targets that don't actually allow the GM or player to see the inventory, making the item inaccessible. */
                 if(checkCompatible(sourceActor.data.type, dragTargetActor.data.type, futureItem)) {
                     const originalQuantity = futureItem.data.data.quantity;
-                    if(originalQuantity > 1) {
+                    if(originalQuantity >= 1) {
                         // It seems that custom fields are only kept if put in .data.data
                         futureItem.data.data.quantity = 0; // we'll set it to the right value later after the user has said how many they want to transfer
                         const originalItem = game.actors.get(futureItem.actorId).items.get(futureItem.data._id);
