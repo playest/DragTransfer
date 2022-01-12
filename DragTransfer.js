@@ -1,8 +1,7 @@
 // DragTransfer
 // (c) 2021 David Zvekic
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-var settings_js_1 = require("./settings/settings.js");
+import { registerSettings } from './settings/settings.js';
 var dragTransfer = new Object();
 var dragTransferTransaction = {};
 (function () {
@@ -58,7 +57,7 @@ var dragTransferTransaction = {};
         }
         if ("dragTransfer" in createdItem.data.data) {
             createdItem.update({ "data.-=dragTransfer": null });
-            //delete createdItem.data.data.dragTransfer; // remove module info that is not needed anymore
+            delete createdItem.data.data.dragTransfer; // remove module info that is not needed anymore
         }
         if (transferedQuantity > 0 && transferedQuantity <= dragTransferData.originalQuantity) {
             var newOriginalQuantity = dragTransferData.originalQuantity - transferedQuantity;
@@ -135,7 +134,7 @@ var dragTransferTransaction = {};
             close: function (html) {
                 if ("dragTransfer" in createdItem.data.data) {
                     createdItem.update({ "data.-=dragTransfer": null });
-                    //delete createdItem.data.data.dragTransfer; // remove module info that is not needed anymore
+                    delete createdItem.data.data.dragTransfer; // remove module info that is not needed anymore
                 }
             }
         });
@@ -161,7 +160,7 @@ var dragTransferTransaction = {};
         transferDialog.render(true);
     }
     Hooks.once('init', function () {
-        (0, settings_js_1.registerSettings)();
+        registerSettings();
     });
     /*
     options: {"temporary":false, "renderSheet":false, "render":true}

@@ -72,7 +72,7 @@ interface DragTransferData {
 
         if("dragTransfer" in createdItem.data.data) {
             createdItem.update({ "data.-=dragTransfer": null });
-            //delete createdItem.data.data.dragTransfer; // remove module info that is not needed anymore
+            delete createdItem.data.data.dragTransfer; // remove module info that is not needed anymore
         }
 
         if(transferedQuantity > 0 && transferedQuantity <= dragTransferData.originalQuantity) {
@@ -162,7 +162,7 @@ interface DragTransferData {
             close: html => {
                 if("dragTransfer" in createdItem.data.data) {
                     createdItem.update({ "data.-=dragTransfer": null });
-                    //delete createdItem.data.data.dragTransfer; // remove module info that is not needed anymore
+                    delete createdItem.data.data.dragTransfer; // remove module info that is not needed anymore
                 }
             }
         });

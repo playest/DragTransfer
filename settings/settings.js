@@ -1,7 +1,5 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.registerSettings = void 0;
-function registerSettings() {
+export function registerSettings() {
     var moduleName = 'DragTransfer';
     var MODNAME = 'DRAGTANSFER';
     game.settings.register(moduleName, 'actorTransferSame', {
@@ -30,5 +28,4 @@ function registerSettings() {
         }
     });
 }
-exports.registerSettings = registerSettings;
 ;
