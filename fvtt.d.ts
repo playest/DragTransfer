@@ -19,7 +19,7 @@ global {
         //static on<T extends keyof HooksMap>(event: T, callback: FoundryVTT.HooksMap[T]);
         static once(event: "init", callback: () => void);
         static on(event: "createItem", callback: (createdItem: Item, options: {"temporary":boolean, "renderSheet":boolean, "render":boolean}, userId) => void);
-        static on(event: "dropActorSheetData", callback: (dragTargetActor: Actor, sheet: Sheet, futureItem: FutureItem) => voi);
+        static on(event: "dropActorSheetData", callback: (dragTargetActor: FoundryVTT.Actor, sheet: FoundryVTT.Sheet, futureItem: FoundryVTT.FutureItem) => voi);
     }
 }
 

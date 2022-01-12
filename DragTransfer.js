@@ -169,6 +169,7 @@ var dragTransferTransaction = {};
     options: {"temporary":false, "renderSheet":false, "render":true}
     */
     Hooks.on('createItem', function (createdItem, options, userId) {
+        return;
         console.log("createItem", createdItem, options, userId);
         if ("dragTransfer" in createdItem.data.data) {
             console.log("dragTransfer info detected on created object", createdItem.data.data.dragTransfer);
