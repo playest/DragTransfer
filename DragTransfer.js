@@ -86,6 +86,36 @@ let dragTransferTransaction = {};
         }
     }
 
+    function transferCurrency(html, sourceActorId, targetActorId) {
+        let currencies = ["pp", "gp", "ep", "sp", "cp"];
+        console.log("Transfer currency:", html.find('input.currency'));
+        //game.actors.get("d776K0YD9NBVwleL").data.data.currency
+        //game.actors.get(targetActorId).update({"data.currency.cp": 12});
+
+        const sourceActor = game.actors.get(sourceActorId);
+
+        let errors = [];
+        for(let c of currencies) {
+            const amount = parseInt(html.find("." + c).val(), 10);
+            if(amount > sourceActor.data.data.currency[c]) {
+                errors.push(c);
+            }
+        }
+
+        if(errors.length !== 0) {
+            ui.notifications.error("DragTransfer: you don't have enough of the following currencies " + errors.join(", "));
+        }
+        else {
+            const targetActor = game.actors.get(targetActorId);
+            for(let c of currencies) {
+                const amount = parseInt(html.find("." + c).val(), 10);
+                const key = "data.currency." + c;
+                sourceActor.update({[key]: sourceActor.data.data.currency[c] - amount});
+                targetActor.update({[key]: targetActor.data.data.currency[c] + amount}); // key is between [] to force its evaluation
+            }
+        }
+    }
+
     /**
     dragTransferData: { originalActorId, originalItemId, originalQuantity, newItemId }
     */
@@ -143,33 +173,7 @@ let dragTransferTransaction = {};
                     //icon: "<i class='fas fa-check'></i>",
                     label: `Transfer`,
                     callback: html => {
-                        let currencies = ["pp", "gp", "ep", "sp", "cp"];
-                        console.log("Transfer currency:", html.find('input.currency'));
-                        //game.actors.get("d776K0YD9NBVwleL").data.data.currency
-                        //game.actors.get(targetActorId).update({"data.currency.cp": 12});
-
-                        const sourceActor = game.actors.get(sourceActorId);
-
-                        let errors = [];
-                        for(let c of currencies) {
-                            const amount = parseInt(html.find("." + c).val(), 10);
-                            if(amount > sourceActor.data.data.currency[c]) {
-                                errors.push(c);
-                            }
-                        }
-
-                        if(errors.length !== 0) {
-                            ui.notifications.error("DragTransfer: you don't have enough of the following currencies " + errors.join(", "));
-                        }
-                        else {
-                            const targetActor = game.actors.get(targetActorId);
-                            for(let c of currencies) {
-                                const amount = parseInt(html.find("." + c).val(), 10);
-                                const key = "data.currency." + c;
-                                sourceActor.update({[key]: sourceActor.data.data.currency[c] - amount});
-                                targetActor.update({[key]: targetActor.data.data.currency[c] + amount}); // key is between [] to force its evaluation
-                            }
-                        }
+                        transferCurrency(html, sourceActorId, targetActorId);
                     }
                 }
             },
