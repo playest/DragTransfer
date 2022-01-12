@@ -69,16 +69,21 @@ let dragTransferTransaction = {};
                     //icon: "<i class='fas fa-check'></i>",
                     label: `Transfer`,
                     callback: html => {
+                        const originalActor = game.actors.get(dragTransferData.originalActorId);
+                        const originalItem = originalActor.items.get(dragTransferData.originalItemId);
+                        if("dragTransfer" in createdItem.data.data) {
+                            createdItem.update({"data.-=dragTransfer": null});
+                            delete createdItem.data.data.dragTransfer; // remove module info that is not needed anymore
+                        }
                         const transferedQuantity = parseInt(html.find('input.transferedQuantity').val(), 10);
+                        const stackItems = html.find('input.stack').val() == "on";
                         if(transferedQuantity > 0 && transferedQuantity <= dragTransferData.originalQuantity) {
-                            const originalActor = game.actors.get(dragTransferData.originalActorId);
-                            const originalItem = originalActor.items.get(dragTransferData.originalItemId);
                             const newOriginalQuantity = dragTransferData.originalQuantity - transferedQuantity;
+                            if(stackItems) {
+                                console.log("createdItem", createdItem);
+                            }
                             originalItem.update({"data.quantity": newOriginalQuantity});
                             createdItem.update({"data.quantity": transferedQuantity});
-                            if("dragTransfer" in createdItem.data.data) {
-                                delete createdItem.data.data.dragTransfer; // remove module info that is not needed anymore
-                            }
                             if(newOriginalQuantity <= 0) {
                                 deleteItem(originalActor, dragTransferData.originalItemId);
                             }
@@ -90,6 +95,12 @@ let dragTransferTransaction = {};
                 }
             },
             default: 'transfer',
+            close: html => {
+                if("dragTransfer" in createdItem.data.data) {
+                    createdItem.update({"data.-=dragTransfer": null});
+                    delete createdItem.data.data.dragTransfer; // remove module info that is not needed anymore
+                }
+            }
         });
         transferDialog.render(true);
     }
