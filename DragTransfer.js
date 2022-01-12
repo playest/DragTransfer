@@ -63,19 +63,19 @@ let dragTransferTransaction = {};
                     callback: html => {
                         const transferedQuantity = parseInt(html.find('input.transferedQuantity').val(), 10);
                         if(transferedQuantity > 0 && transferedQuantity <= dragTransferData.originalQuantity) {
-                            const originalItem = game.actors.get(dragTransferData.originalActorId).items.get(dragTransferData.originalItemId);
-                            originalItem.update({"data.quantity": dragTransferData.originalQuantity - transferedQuantity});
+                            const originalActor = game.actors.get(dragTransferData.originalActorId);
+                            const originalItem = originalActor.items.get(dragTransferData.originalItemId);
+                            const newOriginalQuantity = dragTransferData.originalQuantity - transferedQuantity;
+                            originalItem.update({"data.quantity": newOriginalQuantity});
                             createdItem.update({"data.quantity": transferedQuantity});
-                            /*
-                            if(dragSourceItem.data.data.quantity <= 0) {
-                                if(sourceActor.deleteEmbeddedDocuments != undefined) {
-                                    sourceActor.deleteEmbeddedDocuments("Item", [dragSourceItem.data._id]);
+                            if(newOriginalQuantity <= 0) {
+                                if(originalActor.deleteEmbeddedDocuments != undefined) {
+                                    originalActor.deleteEmbeddedDocuments("Item", [dragTransferData.originalItemId]);
                                 }
                                 else {
-                                    sourceActor.deleteOwnedItem(dragSourceItem.data._id);
+                                    originalActor.deleteOwnedItem(dragSourceItem.data._id);
                                 }
                             }
-                            */
                         }
                         else {
                             ui.notifications.error('DragTransfer: could not transfer ' + transferedQuantity + " items");
