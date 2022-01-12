@@ -75,7 +75,7 @@ let dragTransferTransaction = {};
                     stacked = true;
                 }
             }
-            
+
             originalItem.update({"data.quantity": newOriginalQuantity}).then((i) => deleteItemIfZero(i.parent, i.data._id));
             if(stacked === false) {
                 createdItem.update({"data.quantity": transferedQuantity}).then((i) => deleteItemIfZero(i.parent, i.data._id));
@@ -89,7 +89,7 @@ let dragTransferTransaction = {};
     /**
     dragTransferData: { originalActorId, originalItemId, originalQuantity, newItemId }
     */
-    function showTransferDialog(dragTransferData, createdItem) {
+    function showItemTransferDialog(dragTransferData, createdItem) {
         const originalActor = game.actors.get(dragTransferData.originalActorId);
         let transferDialog = new Dialog({
             title: 'How many items do you want to move?',
@@ -125,6 +125,35 @@ let dragTransferTransaction = {};
         transferDialog.render(true);
     }
 
+    function showCurrencyTransferDialog() {
+        let transferDialog = new Dialog({
+            title: 'How much do you want to move?',
+            content: `
+              <form>
+                <div class="form-group">
+                  Platinum: <input type="number" class="currency platinum" value="0" />
+                  Gold: <input type="number" class="currency gold" value="0" />
+                  Electrum: <input type="number" class="currency electrum" value="0" />
+                  Silver: <input type="number" class="currency silver" value="0" />
+                  Copper: <input type="number" class="currency copper" value="1" />
+                </div>
+              </form>`,
+            buttons: {
+                transfer: {
+                    //icon: "<i class='fas fa-check'></i>",
+                    label: `Transfer`,
+                    callback: html => {
+                        console.log("Transfer currency:", html.find('input.currency'));
+                    }
+                }
+            },
+            default: 'transfer',
+            close: html => {
+            }
+        });
+        transferDialog.render(true);
+    }
+
     Hooks.once('init', () => {
         registerSettings();
     });
@@ -147,7 +176,7 @@ let dragTransferTransaction = {};
                 transfer(game.actors.get(dtd.originalActorId), dtd2, createdItem, 1, true);
             }
             else {
-                showTransferDialog(dtd2, createdItem);
+                showItemTransferDialog(dtd2, createdItem);
             }
         }
     });
@@ -170,7 +199,11 @@ let dragTransferTransaction = {};
                 /* if both source and target have the same type then allow deleting original item. this is a safety check because some game systems may allow dropping on targets that don't actually allow the GM or player to see the inventory, making the item inaccessible. */
                 if(checkCompatible(sourceActor.data.type, dragTargetActor.data.type, futureItem)) {
                     const originalQuantity = futureItem.data.data.quantity;
-                    if(originalQuantity >= 1) {
+                    if(futureItem.data.name === "Currency") {
+                        showCurrencyTransferDialog();
+                        return false;
+                    }
+                    else if(originalQuantity >= 1) {
                         // It seems that custom fields are only kept if put in .data.data
                         futureItem.data.data.quantity = 0; // we'll set it to the right value later after the user has said how many they want to transfer
                         const originalItem = game.actors.get(futureItem.actorId).items.get(futureItem.data._id);
@@ -187,5 +220,4 @@ let dragTransferTransaction = {};
             }
         }
     });
-
 })();
