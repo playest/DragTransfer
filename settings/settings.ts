@@ -1,9 +1,9 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.registerSettings = void 0;
-function registerSettings() {
-    var moduleName = 'DragTransfer';
-    var MODNAME = 'DRAGTANSFER';
+
+export function registerSettings() {
+    const moduleName = 'DragTransfer';
+    const MODNAME = 'DRAGTANSFER';
+
     game.settings.register(moduleName, 'actorTransferSame', {
         name: game.i18n.localize(MODNAME + ".actorTransferSame"),
         hint: game.i18n.localize(MODNAME + ".actorTransferSameHint"),
@@ -12,6 +12,7 @@ function registerSettings() {
         type: Boolean,
         default: true,
     });
+
     game.settings.register(moduleName, 'actorTransferPairs', {
         name: game.i18n.localize(MODNAME + ".actorTransferPairs"),
         hint: game.i18n.localize(MODNAME + ".actorTransferPairsHint"),
@@ -19,16 +20,14 @@ function registerSettings() {
         config: true,
         type: String,
         default: "",
-        onChange: function (value) {
+        onChange: (value: string) => {
             try {
                 JSON.parse("{" + value + "}");
             }
-            catch (err) {
+            catch(err: any) {
                 ui.notifications.error(err.message);
                 throw err;
             }
         }
     });
-}
-exports.registerSettings = registerSettings;
-;
+};
