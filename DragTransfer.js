@@ -7,26 +7,17 @@ import {registerSettings} from './settings/settings.js';
 
 let dragTransfer = new Object();
 
-Hooks.once('init', () => {
-    registerSettings();
-});
+let dragTransferTransaction = {};
 
-/*
-options: {"temporary":false, "renderSheet":false, "render":true}
-*/
-Hooks.on('createItem', (createdItem, options, userId, d, e) => {
-    console.log("createItem", createdItem, options, userId, d, e, this);
-});
-
-Hooks.on('dropActorSheetData', (dragTargetActor, sheet, dragSourceItem) => {
+(function() {
     function isAlt() {
         // check if Alt and only Alt is being pressed during the drop event.
         const alts = new Set(["Alt", "AltLeft"]);
         return (game.keyboard.downKeys.size == 1 && game.keyboard.downKeys.intersects(alts));
     }
 
-    function checkCompatible(actorTypeName1, actorTypeName2) {
-        console.info('DragNTransfer - Check Compatibility: Dragging Item:"' + String(dragSourceItem.data.type) + '" from sourceActor.data.type:"' + String(actorTypeName1) + '" to dragTarget.data.type:"' + String(actorTypeName2) + '".');
+    function checkCompatible(actorTypeName1, actorTypeName2, item) {
+        console.info('DragNTransfer - Check Compatibility: Dragging Item:"' + String(item.data.type) + '" from sourceActor.data.type:"' + String(actorTypeName1) + '" to dragTarget.data.type:"' + String(actorTypeName2) + '".');
 
         const transferBetweenSameTypeActors = game.settings.get('DragTransfer', 'actorTransferSame');
         if(transferBetweenSameTypeActors && actorTypeName1 == actorTypeName2) {
@@ -48,47 +39,116 @@ Hooks.on('dropActorSheetData', (dragTargetActor, sheet, dragSourceItem) => {
         return false;
     }
 
-    if(isAlt()) {
-        return;  // ignore Drag'N'Transfer when Alt is pressed to drop.
+    /**
+    dragTransferData: {
+        originalActorId
+        originalItemId,
+        originalQuantity,
+        newItemId
     }
-
-    if(dragSourceItem.type == "Item" && dragSourceItem.actorId) {
-        if(!dragTargetActor.data._id) {
-            console.warn("Drag'n'Transfer - target has no data._id?", dragTargetActor);
-            return;
-        }
-        if(dragTargetActor.data._id == dragSourceItem.actorId) {
-            return;  // ignore dropping on self
-        }
-        let sourceActor = game.actors.get(dragSourceItem.actorId);
-        if(sourceActor) {
-            /* if both source and target have the same type then allow deleting original item. this is a safety check because some game systems may allow dropping on targets that don't actually allow the GM or player to see the inventory, making the item inaccessible. */
-
-            if(checkCompatible(sourceActor.data.type, dragTargetActor.data.type)) {
-                if(dragSourceItem.data.data.quantity > 1) {
-                    let transferedQuantity = 2;
-                    const sourceItem = game.actors.get(dragSourceItem.actorId).items.get(dragSourceItem.data._id);
-                    dragSourceItem.data.data.quantity = 100;
-                    const updatedSourceQuantity = sourceItem.data.data.quantity - transferedQuantity;
-                    sourceItem.update({"data.quantity": updatedSourceQuantity});
-                    if(updatedSourceQuantity <= 0) {
-                        if(sourceActor.deleteEmbeddedDocuments != undefined) {
-                            sourceActor.deleteEmbeddedDocuments("Item", [dragSourceItem.data._id]);
+    */
+    function showTransferDialog(dragTransferData, createdItem) {
+        let transferDialog = new Dialog({
+            title: 'How many items do you want to move?',
+            content: `
+              <form>
+                <div class="form-group">
+                  <input type="number" class="transferedQuantity" value="${dragTransferData.originalQuantity}"></input>
+                </div>
+              </form>`,
+            buttons: {
+                transfer: {
+                    //icon: "<i class='fas fa-check'></i>",
+                    label: `Transfer`,
+                    callback: html => {
+                        const transferedQuantity = parseInt(html.find('input.transferedQuantity').val(), 10);
+                        if(transferedQuantity > 0 && transferedQuantity <= dragTransferData.originalQuantity) {
+                            const originalItem = game.actors.get(dragTransferData.originalActorId).items.get(dragTransferData.originalItemId);
+                            originalItem.update({"data.quantity": dragTransferData.originalQuantity - transferedQuantity});
+                            createdItem.update({"data.quantity": transferedQuantity});
+                            /*
+                            if(dragSourceItem.data.data.quantity <= 0) {
+                                if(sourceActor.deleteEmbeddedDocuments != undefined) {
+                                    sourceActor.deleteEmbeddedDocuments("Item", [dragSourceItem.data._id]);
+                                }
+                                else {
+                                    sourceActor.deleteOwnedItem(dragSourceItem.data._id);
+                                }
+                            }
+                            */
                         }
                         else {
-                            sourceActor.deleteOwnedItem(dragSourceItem.data._id);
+                            ui.notifications.error('DragTransfer: could not transfer ' + transferedQuantity + " items");
                         }
                     }
                 }
-                else {
-                    if(sourceActor.deleteEmbeddedDocuments != undefined) {
-                        sourceActor.deleteEmbeddedDocuments("Item", [dragSourceItem.data._id]);
+            },
+            default: 'transfer',
+        });
+        transferDialog.render(true);
+    }
+
+    Hooks.once('init', () => {
+        registerSettings();
+    });
+
+    /*
+    options: {"temporary":false, "renderSheet":false, "render":true}
+    */
+    Hooks.on('createItem', (createdItem, options, userId) => {
+        console.log("createItem", createdItem, options, userId);
+        if("dragTransfer" in createdItem.data.data) {
+            console.log("dragTransfer info detected on created object", createdItem.data.data.dragTransfer);
+            const dtd = createdItem.data.data.dragTransfer;
+            const dtd2 = {
+                originalActorId: dtd.originalActorId,
+                originalItemId: dtd.originalItemId,
+                originalQuantity: dtd.originalQuantity,
+                newItemId: createdItem.data._id
+            }
+            showTransferDialog(dtd2, createdItem);
+        }
+    });
+
+    Hooks.on('dropActorSheetData', (dragTargetActor, sheet, futureItem) => {
+        if(isAlt()) {
+            return;  // ignore Drag'N'Transfer when Alt is pressed to drop.
+        }
+
+        if(futureItem.type == "Item" && futureItem.actorId) {
+            if(!dragTargetActor.data._id) {
+                console.warn("Drag'n'Transfer - target has no data._id?", dragTargetActor);
+                return;
+            }
+            if(dragTargetActor.data._id == futureItem.actorId) {
+                return;  // ignore dropping on self
+            }
+            let sourceActor = game.actors.get(futureItem.actorId);
+            if(sourceActor) {
+                /* if both source and target have the same type then allow deleting original item. this is a safety check because some game systems may allow dropping on targets that don't actually allow the GM or player to see the inventory, making the item inaccessible. */
+                if(checkCompatible(sourceActor.data.type, dragTargetActor.data.type, futureItem)) {
+                    const originalQuantity = futureItem.data.data.quantity;
+                    futureItem.data.data.quantity = 0; // we'll set it to the right value later after the user has said how many they want to transfer
+                    if(originalQuantity > 1) {
+                        // It seems that custom fields are only kept if put in .data.data
+                        const originalItem = game.actors.get(futureItem.actorId).items.get(futureItem.data._id);
+                        futureItem.data.data.dragTransfer = {
+                            originalActorId: futureItem.actorId,
+                            originalQuantity: originalQuantity,
+                            originalItemId: originalItem.data._id
+                        };
                     }
                     else {
-                        sourceActor.deleteOwnedItem(dragSourceItem.data._id);
+                        if(sourceActor.deleteEmbeddedDocuments != undefined) {
+                            sourceActor.deleteEmbeddedDocuments("Item", [futureItem.data._id]);
+                        }
+                        else {
+                            sourceActor.deleteOwnedItem(futureItem.data._id);
+                        }
                     }
                 }
             }
         }
-    }
-});
+    });
+
+})();
