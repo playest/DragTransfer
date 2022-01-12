@@ -48,10 +48,17 @@ let dragTransferTransaction = {};
         }
     }
 
+    function deleteItemIfZero(actor, itemId) {
+        if(actor.items.get(itemId).data.data.quantity <= 0) {
+            deleteItem(actor, itemId);
+        }
+    }
+
     /**
     dragTransferData: { originalActorId, originalItemId, originalQuantity, newItemId }
     */
     function showTransferDialog(dragTransferData, createdItem) {
+        const originalActor = game.actors.get(dragTransferData.originalActorId);
         let transferDialog = new Dialog({
             title: 'How many items do you want to move?',
             content: `
@@ -69,7 +76,6 @@ let dragTransferTransaction = {};
                     //icon: "<i class='fas fa-check'></i>",
                     label: `Transfer`,
                     callback: html => {
-                        const originalActor = game.actors.get(dragTransferData.originalActorId);
                         const originalItem = originalActor.items.get(dragTransferData.originalItemId);
                         if("dragTransfer" in createdItem.data.data) {
                             createdItem.update({"data.-=dragTransfer": null});
@@ -79,13 +85,23 @@ let dragTransferTransaction = {};
                         const stackItems = html.find('input.stack').val() == "on";
                         if(transferedQuantity > 0 && transferedQuantity <= dragTransferData.originalQuantity) {
                             const newOriginalQuantity = dragTransferData.originalQuantity - transferedQuantity;
+                            let stacked = false; // will be true if a stack of item has been found and items have been stacked in it
                             if(stackItems) {
-                                console.log("createdItem", createdItem);
+                                createdItem.parent.items.forEach(i => {
+                                    console.log("diff", i, createdItem, "=", diffObject(i, createdItem));
+                                });
+                                const potentialStacks = createdItem.parent.items.filter(i => i.name == createdItem.name && diffObject(createdItem, i) && i.data._id !== createdItem.data._id);
+                                console.log("potentialStacks", potentialStacks);
+                                if(potentialStacks.length >= 1) {
+                                    potentialStacks[0].update({"data.quantity": potentialStacks[0].data.data.quantity + transferedQuantity});
+                                    deleteItemIfZero(createdItem.parent, createdItem.data._id);
+                                    stacked = true;
+                                }
                             }
-                            originalItem.update({"data.quantity": newOriginalQuantity});
-                            createdItem.update({"data.quantity": transferedQuantity});
-                            if(newOriginalQuantity <= 0) {
-                                deleteItem(originalActor, dragTransferData.originalItemId);
+                            
+                            originalItem.update({"data.quantity": newOriginalQuantity}).then((i) => deleteItemIfZero(i.parent, i.data._id));
+                            if(stacked === false) {
+                                createdItem.update({"data.quantity": transferedQuantity}).then((i) => deleteItemIfZero(i.parent, i.data._id));
                             }
                         }
                         else {
@@ -100,6 +116,7 @@ let dragTransferTransaction = {};
                     createdItem.update({"data.-=dragTransfer": null});
                     delete createdItem.data.data.dragTransfer; // remove module info that is not needed anymore
                 }
+                //deleteItemIfZero(createdItem.parent, createdItem.data._id);
             }
         });
         transferDialog.render(true);
