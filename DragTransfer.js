@@ -40,12 +40,7 @@ let dragTransferTransaction = {};
     }
 
     /**
-    dragTransferData: {
-        originalActorId
-        originalItemId,
-        originalQuantity,
-        newItemId
-    }
+    dragTransferData: { originalActorId, originalItemId, originalQuantity, newItemId }
     */
     function showTransferDialog(dragTransferData, createdItem) {
         let transferDialog = new Dialog({
