@@ -54,7 +54,7 @@ let dragTransferTransaction = {};
         }
     }
 
-    function transfer(originalActor, dragTransferData, createdItem, transferedQuantity, stackItems) {
+    function transferItem(originalActor, dragTransferData, createdItem, transferedQuantity, stackItems) {
         const originalItem = originalActor.items.get(dragTransferData.originalItemId);
         if("dragTransfer" in createdItem.data.data) {
             createdItem.update({"data.-=dragTransfer": null});
@@ -110,7 +110,7 @@ let dragTransferTransaction = {};
                     callback: html => {
                         const transferedQuantity = parseInt(html.find('input.transferedQuantity').val(), 10);
                         const stackItems = html.find('input.stack').is(":checked");
-                        transfer(originalActor, dragTransferData, createdItem, transferedQuantity, stackItems);
+                        transferItem(originalActor, dragTransferData, createdItem, transferedQuantity, stackItems);
                     }
                 }
             },
@@ -199,7 +199,7 @@ let dragTransferTransaction = {};
                 newItemId: createdItem.data._id
             }
             if(dtd.originalQuantity <= 1) {
-                transfer(game.actors.get(dtd.originalActorId), dtd2, createdItem, 1, true);
+                transferItem(game.actors.get(dtd.originalActorId), dtd2, createdItem, 1, true);
             }
             else {
                 showItemTransferDialog(dtd2, createdItem);
