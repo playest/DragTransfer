@@ -52,9 +52,13 @@ var dragTransferTransaction = {};
     }
     function transferItem(originalActor, dragTransferData, createdItem, transferedQuantity, stackItems) {
         var originalItem = originalActor.items.get(dragTransferData.originalItemId);
+        if (originalItem == undefined) {
+            console.error("Could not find the source item", dragTransferData.originalItemId);
+            return;
+        }
         if ("dragTransfer" in createdItem.data.data) {
             createdItem.update({ "data.-=dragTransfer": null });
-            delete createdItem.data.data.dragTransfer; // remove module info that is not needed anymore
+            //delete createdItem.data.data.dragTransfer; // remove module info that is not needed anymore
         }
         if (transferedQuantity > 0 && transferedQuantity <= dragTransferData.originalQuantity) {
             var newOriginalQuantity = dragTransferData.originalQuantity - transferedQuantity;
@@ -131,7 +135,7 @@ var dragTransferTransaction = {};
             close: function (html) {
                 if ("dragTransfer" in createdItem.data.data) {
                     createdItem.update({ "data.-=dragTransfer": null });
-                    delete createdItem.data.data.dragTransfer; // remove module info that is not needed anymore
+                    //delete createdItem.data.data.dragTransfer; // remove module info that is not needed anymore
                 }
             }
         });
