@@ -39,6 +39,15 @@ let dragTransferTransaction = {};
         return false;
     }
 
+    function deleteItem(actor, itemId) {
+        if(actor.deleteEmbeddedDocuments != undefined) {
+            actor.deleteEmbeddedDocuments("Item", [itemId]);
+        }
+        else {
+            actor.deleteOwnedItem(itemId);
+        }
+    }
+
     /**
     dragTransferData: { originalActorId, originalItemId, originalQuantity, newItemId }
     */
@@ -48,10 +57,11 @@ let dragTransferTransaction = {};
             content: `
               <form>
                 <div class="form-group">
-                  <input type="number" class="transferedQuantity" value="${dragTransferData.originalQuantity}"></input>
+                  <input type="number" class="transferedQuantity" value="${dragTransferData.originalQuantity}" />
                   <button onclick="this.parentElement.querySelector('.transferedQuantity').value = '1'">One</button>
                   <button onclick="this.parentElement.querySelector('.transferedQuantity').value = '${Math.round(dragTransferData.originalQuantity / 2)}'">Half</button>
-                  <button onclick="this.parentElement.querySelector('.transferedQuantity').value = '${dragTransferData.originalQuantity}'">Max</button>
+                  <button onclick="this.parentElement.querySelector('.transferedQuantity').value = '${dragTransferData.originalQuantity}'">Max</button><br />
+                  <input type="checkbox" class="stack" checked="checked" /> Stack items of the same type
                 </div>
               </form>`,
             buttons: {
@@ -70,12 +80,7 @@ let dragTransferTransaction = {};
                                 delete createdItem.data.data.dragTransfer; // remove module info that is not needed anymore
                             }
                             if(newOriginalQuantity <= 0) {
-                                if(originalActor.deleteEmbeddedDocuments != undefined) {
-                                    originalActor.deleteEmbeddedDocuments("Item", [dragTransferData.originalItemId]);
-                                }
-                                else {
-                                    originalActor.deleteOwnedItem(dragSourceItem.data._id);
-                                }
+                                deleteItem(originalActor, dragTransferData.originalItemId);
                             }
                         }
                         else {
@@ -140,12 +145,7 @@ let dragTransferTransaction = {};
                         };
                     }
                     else {
-                        if(sourceActor.deleteEmbeddedDocuments != undefined) {
-                            sourceActor.deleteEmbeddedDocuments("Item", [futureItem.data._id]);
-                        }
-                        else {
-                            sourceActor.deleteOwnedItem(futureItem.data._id);
-                        }
+                        deleteItem(sourceActor, futureItem.data._id);
                     }
                 }
             }
