@@ -44,8 +44,11 @@ var dragTransferTransaction = {};
         }
     }
     function deleteItemIfZero(actor, itemId) {
-        var _a, _b;
-        if ((_b = (_a = actor.items.get(itemId)) === null || _a === void 0 ? void 0 : _a.data.data.quantity) !== null && _b !== void 0 ? _b : 1 <= 0) {
+        var item = actor.items.get(itemId);
+        if (item == undefined) {
+            return;
+        }
+        if (item.data.data.quantity <= 0) {
             deleteItem(actor, itemId);
         }
     }
@@ -57,7 +60,7 @@ var dragTransferTransaction = {};
         }
         if ("dragTransfer" in createdItem.data.data) {
             createdItem.update({ "data.-=dragTransfer": null });
-            delete createdItem.data.data.dragTransfer; // remove module info that is not needed anymore
+            //delete createdItem.data.data.dragTransfer; // remove module info that is not needed anymore
         }
         if (transferedQuantity > 0 && transferedQuantity <= dragTransferData.originalQuantity) {
             var newOriginalQuantity = dragTransferData.originalQuantity - transferedQuantity;
@@ -134,7 +137,7 @@ var dragTransferTransaction = {};
             close: function (html) {
                 if ("dragTransfer" in createdItem.data.data) {
                     createdItem.update({ "data.-=dragTransfer": null });
-                    delete createdItem.data.data.dragTransfer; // remove module info that is not needed anymore
+                    //delete createdItem.data.data.dragTransfer; // remove module info that is not needed anymore
                 }
             }
         });

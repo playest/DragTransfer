@@ -58,7 +58,11 @@ interface DragTransferData {
     }
 
     function deleteItemIfZero(actor: FoundryVTT.Actor, itemId: FoundryVTT.ItemId) {
-        if(actor.items.get(itemId)?.data.data.quantity ?? 1 <= 0) {
+        const item = actor.items.get(itemId);
+        if(item == undefined) {
+            return;
+        }
+        if(item.data.data.quantity <= 0) {
             deleteItem(actor, itemId);
         }
     }
@@ -72,7 +76,7 @@ interface DragTransferData {
 
         if("dragTransfer" in createdItem.data.data) {
             createdItem.update({ "data.-=dragTransfer": null });
-            delete createdItem.data.data.dragTransfer; // remove module info that is not needed anymore
+            //delete createdItem.data.data.dragTransfer; // remove module info that is not needed anymore
         }
 
         if(transferedQuantity > 0 && transferedQuantity <= dragTransferData.originalQuantity) {
@@ -162,7 +166,7 @@ interface DragTransferData {
             close: html => {
                 if("dragTransfer" in createdItem.data.data) {
                     createdItem.update({ "data.-=dragTransfer": null });
-                    delete createdItem.data.data.dragTransfer; // remove module info that is not needed anymore
+                    //delete createdItem.data.data.dragTransfer; // remove module info that is not needed anymore
                 }
             }
         });
