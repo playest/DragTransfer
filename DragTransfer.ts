@@ -1,11 +1,13 @@
 // DragTransfer
 // (c) 2021 David Zvekic
-import { FoundryVTT } from './fvtt';
-import { registerSettings } from './settings';
+import type { FoundryVTT } from './fvtt';
+import { registerSettings } from './settings.js';
 
 let dragTransfer = new Object();
 
 const MODNAME = 'DRAGTANSFER';
+
+console.log("DragTransfer loaded");
 
 interface DragTransferData {
     originalActorId: FoundryVTT.ActorId,
