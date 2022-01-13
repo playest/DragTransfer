@@ -1,4 +1,4 @@
-This project is based on and inspired by the [amazing work](https://github.com/David-Zvekic/DragTransfer) of David Zvekic [![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/davidzvekic).
+This project is inspired by the [amazing work](https://github.com/David-Zvekic/DragTransfer) of David Zvekic [![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/davidzvekic).
 
 **TransferStuff**, a module for Foundry VTT.
 
@@ -26,18 +26,10 @@ If you include a list such as `"A":"B", "A":"C"` (where the "A" key appears mult
 
 Examples I use:
 
-a) For dnd5e
+* For dnd5e: `"character":"npc"`
+* For dnd5e but with multiple values for one of the keys: `"character":["vehicle", "character"],"vehicle":"character"`
+* For alienrpg: `"character":"synthetic","synthetic":"vehicles","vehicles":"character"`
 
-  "character":"npc"
-
-b) For dnd5e but with multiple values for one of the keys
-
-  "character":["vehicle", "character"],"vehicle":"character"
-
-c) for alienrpg
-
-  "character":"synthetic","synthetic":"vehicles","vehicles":"character"
-  
 (note that up to alienrpg 2.0.0 the actor sheet for "vehicles" only support weapons and are not compatible otherwise so this isn't a bug in TransferStuff if a Motion Tracker transferred to a vehicle vanishes (see Limitations).
 
 
@@ -49,4 +41,4 @@ c) for alienrpg
 
 If you are playing a system that gives incompatible actors the same "type", then this safety check wont work and you must take responsibility to ensure you dont drop items onto target sheets that lack the ability to display the same items as the source. This module will delete the original copy, and you may have no way to access the resulting copy made in the destination actor JSON (for instance dropping a Talent into a Vehicle in Aliens with this module would delete the Talent despite the Vehicle sheet not displaying the Talent).
 
-**PRO TIP**: If players want to leave things in a room somewhere, you can create an Actor-sheet with a token that looks like a box or container, and then TransferStuff inventory into it's character sheet. Just leave the token of that actor on the map, and items players want to leave in that room can be recorded inside that actor and need not clutter up your sidebar.
+**PRO TIP**: If players want you player to have access to a shared chest, you can create an Actor-sheet with a token that looks like a box or container, and then let them transfer inventory into it's character sheet.
