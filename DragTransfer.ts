@@ -7,8 +7,6 @@ let dragTransfer = new Object();
 
 const MODNAME = 'DRAGTANSFER';
 
-console.log("DragTransfer loaded");
-
 interface DragTransferData {
     originalActorId: FoundryVTT.ActorId,
     originalItemId: FoundryVTT.ItemId,
@@ -77,9 +75,6 @@ interface DragTransferData {
             const newOriginalQuantity = originalQuantity - transferedQuantity;
             let stacked = false; // will be true if a stack of item has been found and items have been stacked in it
             if(stackItems) {
-                targetActor.items.forEach(i => {
-                    console.log("diff", i, createdItem, "=", diffObject(i, createdItem));
-                });
                 const potentialStacks = targetActor.items.filter(i => i.name == originalItem.name && diffObject(createdItem, i) && i.data._id !== createdItem.data._id);
                 if(potentialStacks.length >= 1) {
                     potentialStacks[0].update({ "data.quantity": potentialStacks[0].data.data.quantity + transferedQuantity });
@@ -101,10 +96,6 @@ interface DragTransferData {
 
     function transferCurrency(html: JQuery, sourceActorId: FoundryVTT.ActorId, targetActorId: FoundryVTT.ActorId) {
         let currencies = ["pp", "gp", "ep", "sp", "cp"];
-        console.log("Transfer currency:", html.find('input.currency'));
-        //game.actors.get("d776K0YD9NBVwleL").data.data.currency
-        //game.actors.get(targetActorId).update({"data.currency.cp": 12});
-
         const sourceActor = game.actors.get(sourceActorId)!;
 
         let errors = [];
@@ -215,7 +206,6 @@ interface DragTransferData {
                     const targetActorId = dragTargetActor.data._id;
                     const sourceActorId = futureItem.actorId;
                     if(futureItem.data.name === game.i18n.localize(MODNAME + ".currency")) {
-                        console.log(dragTargetActor, sheet, futureItem);
                         showCurrencyTransferDialog(sourceActorId, targetActorId);
                         return false;
                     }
