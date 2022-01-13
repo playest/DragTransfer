@@ -1,6 +1,6 @@
 {
-  "name": "DragTransfer",
-  "title": "Drag'n'Transfer",
+  "name": "TransferStuff",
+  "title": "Transfer Stuff",
   "description": "Move (rather than copy) items and currency drag-and-dropped between character sheets.",
   "author": "Playest and David Zvekic",
   "authors": [
@@ -13,11 +13,11 @@
   "version": "1.2.4",
   "compatibleCoreVersion": "9",
   "minimumCoreVersion": "9",
-  "url":"https://github.com/David-Zvekic/DragTransfer",
-  "manifest": "https://github.com/playest/DragTransfer/releases/download/v1.2.3/module.json",
-  "download": "https://github.com/playest/DragTransfer/releases/download/v1.2.3/DragTransfer.zip",
-  "esmodules": [ "DragTransfer.js" ],
-  "styles": [ "dragtransfer.css" ],
+  "url":"https://github.com/playest/TransferStuff/",
+  "manifest": "https://github.com/playest/TransferStuff/releases/download/v1.2.3/module.json",
+  "download": "https://github.com/playest/TransferStuff/releases/download/v1.2.3/TransferStuff.zip",
+  "esmodules": [ "TransferStuff.js" ],
+  "styles": [ "TransferStuff.css" ],
   "languages": [
     {
       "lang": "en",

@@ -1,18 +1,8 @@
-// DragTransfer
-// (c) 2021 David Zvekic
+// TransferStuff
 import type { FoundryVTT } from './fvtt';
 import { registerSettings } from './settings.js';
 
-let dragTransfer = new Object();
-
-const MODNAME = 'DRAGTANSFER';
-
-interface DragTransferData {
-    originalActorId: FoundryVTT.ActorId,
-    originalItemId: FoundryVTT.ItemId,
-    originalQuantity: number,
-    newItemId: FoundryVTT.ItemId
-}
+const MODNAME = 'TRANSFERSTUFF';
 
 (function() {
     function isAlt() {
@@ -22,14 +12,14 @@ interface DragTransferData {
     }
 
     function checkCompatible(actorTypeName1: FoundryVTT.ActorType, actorTypeName2: FoundryVTT.ActorType, item: FoundryVTT.FutureItem) {
-        console.info('DragNTransfer - Check Compatibility: Dragging Item:"' + String(item.data.type) + '" from sourceActor.data.type:"' + String(actorTypeName1) + '" to dragTarget.data.type:"' + String(actorTypeName2) + '".');
+        console.info('TransferStuff | Check Compatibility: Dragging Item:"' + String(item.data.type) + '" from sourceActor.data.type:"' + String(actorTypeName1) + '" to dragTarget.data.type:"' + String(actorTypeName2) + '".');
 
-        const transferBetweenSameTypeActors = game.settings.get('DragTransfer', 'actorTransferSame');
+        const transferBetweenSameTypeActors = game.settings.get('TransferStuff', 'actorTransferSame');
         if(transferBetweenSameTypeActors && actorTypeName1 == actorTypeName2) {
             return true;
         }
         try {
-            const transferPairs = JSON.parse("{" + game.settings.get('DragTransfer', 'actorTransferPairs') + "}");
+            const transferPairs = JSON.parse("{" + game.settings.get('TransferStuff', 'actorTransferPairs') + "}");
             const withActorTypeName1 = transferPairs[actorTypeName1];
             const withActorTypeName2 = transferPairs[actorTypeName2];
             if(Array.isArray(withActorTypeName1) && withActorTypeName1.indexOf(actorTypeName2) !== -1) return true;
@@ -38,8 +28,8 @@ interface DragTransferData {
             if(withActorTypeName2 == actorTypeName1) return true;
         }
         catch(err: any) {
-            console.error('DragTransfer: ', err.message);
-            ui.notifications.error('DragTransfer: ' + err.message);
+            console.error('TransferStuff | ', err.message);
+            ui.notifications.error('TransferStuff | ' + err.message);
         }
         return false;
     }
@@ -90,7 +80,7 @@ interface DragTransferData {
             }
         }
         else {
-            ui.notifications.error('DragTransfer: could not transfer ' + transferedQuantity + " items");
+            ui.notifications.error('TransferStuff | could not transfer ' + transferedQuantity + " items");
         }
     }
 
@@ -107,7 +97,7 @@ interface DragTransferData {
         }
 
         if(errors.length !== 0) {
-            ui.notifications.error("DragTransfer: " + game.i18n.localize(MODNAME + ".notEnoughCurrency") + " " + errors.join(", "));
+            ui.notifications.error("TransferStuff | " + game.i18n.localize(MODNAME + ".notEnoughCurrency") + " " + errors.join(", "));
         }
         else {
             const targetActor = game.actors.get(targetActorId)!;
@@ -120,15 +110,12 @@ interface DragTransferData {
         }
     }
 
-    /**
-    dragTransferData: { originalActorId, originalItemId, originalQuantity, newItemId }
-    */
     function showItemTransferDialog(originalQuantity: number, originalActorId: FoundryVTT.ActorId, targetActorId: FoundryVTT.ActorId, originalItemId: FoundryVTT.ItemId, createdItem: FoundryVTT.FutureItem) {
         const originalActor = game.actors.get(originalActorId)!;
         let transferDialog = new Dialog({
             title: 'How many items do you want to move?',
             content: `
-              <form class="dragtransfer">
+              <form class="transferstuff">
                 <div class="form-group">
                   <input type="number" class="transferedQuantity" value="${originalQuantity}" min="0" max="${originalQuantity}" />
                   <button onclick="this.parentElement.querySelector('.transferedQuantity').value = '1'">${game.i18n.localize(MODNAME + ".one")}</button>
@@ -158,7 +145,7 @@ interface DragTransferData {
         let transferDialog = new Dialog({
             title: game.i18n.localize(MODNAME + ".howMuchCurrency"),
             content: `
-              <form class="dragtransfer">
+              <form class="transferstuff">
                 <div class="form-group">
                   Platinum: <input type="number" class="currency pp" value="0" min="0" max="${sourceActor.data.data.currency.pp}" />
                   Gold: <input type="number" class="currency gp" value="0" min="0" max="${sourceActor.data.data.currency.gp}" />
@@ -187,12 +174,12 @@ interface DragTransferData {
 
     Hooks.on('dropActorSheetData', (dragTargetActor, sheet, futureItem) => {
         if(isAlt()) {
-            return;  // ignore Drag'N'Transfer when Alt is pressed to drop.
+            return;  // ignore when Alt is pressed to drop.
         }
 
         if(futureItem.type == "Item" && futureItem.actorId) {
             if(!dragTargetActor.data._id) {
-                console.warn("Drag'n'Transfer - target has no data._id?", dragTargetActor);
+                console.warn("TransferStuff | target has no data._id?", dragTargetActor);
                 return;
             }
             if(dragTargetActor.data._id == futureItem.actorId) {

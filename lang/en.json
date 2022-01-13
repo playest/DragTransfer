@@ -1,15 +1,15 @@
 {
-    "DRAGTANSFER.actorTransferSame": "Enable for actors of the same type",
-    "DRAGTANSFER.actorTransferSameHint": "If disabled you will have to rely on the pairs you can define by hand.",
-    "DRAGTANSFER.actorTransferPairs": "Compatible Actor Types:",
-    "DRAGTANSFER.actorTransferPairsHint": "The body of a JSON map of compatible actor type key-value pairs allowing Drag'n'Transfer. By default this module only works between actor sheets of the same type, but some game systems may have other combinations that work. Example 1: \"character\":\"synthetic\",\"synthetic\":\"vehicles\",\"vehicles\":\"character\". Example 2 (for DnD5e): \"character\":\"vehicle\",\"vehicle\":\"character\" that would enable moving item between characters and vehicles. You can also have multiple actor types as value, example 3: \"character\":[\"vehicle\", \"character\"],\"vehicle\":\"character\" would enable transfer from character to vehicle, from character to character and from vehicle to character but NOT from vehicle to vehicle (providing that the \"actors of the same type\" checkbox is unchecked).",
-    "DRAGTANSFER.notEnoughCurrency": "you don't have enough of the following currencies",
-    "DRAGTANSFER.howManyItem": "How many items do you want to move?",
-    "DRAGTANSFER.one": "One",
-    "DRAGTANSFER.half": "Half",
-    "DRAGTANSFER.max": "Max",
-    "DRAGTANSFER.stackItems": "Stack items of the same type",
-    "DRAGTANSFER.transfer": "Transfer",
-    "DRAGTANSFER.howMuchCurrency": "How much do you want to move?",
-    "DRAGTANSFER.currency": "Currency"
+    "TRANSFERSTUFF.actorTransferSame": "Enable for actors of the same type",
+    "TRANSFERSTUFF.actorTransferSameHint": "If disabled you will have to rely on the pairs you can define by hand.",
+    "TRANSFERSTUFF.actorTransferPairs": "Compatible Actor Types:",
+    "TRANSFERSTUFF.actorTransferPairsHint": "The body of a JSON map of compatible actor type key-value pairs allowing TransferStuff. By default this module only works between actor sheets of the same type, but some game systems may have other combinations that work. Example 1: \"character\":\"synthetic\",\"synthetic\":\"vehicles\",\"vehicles\":\"character\". Example 2 (for DnD5e): \"character\":\"vehicle\",\"vehicle\":\"character\" that would enable moving item between characters and vehicles. You can also have multiple actor types as value, example 3: \"character\":[\"vehicle\", \"character\"],\"vehicle\":\"character\" would enable transfer from character to vehicle, from character to character and from vehicle to character but NOT from vehicle to vehicle (providing that the \"actors of the same type\" checkbox is unchecked).",
+    "TRANSFERSTUFF.notEnoughCurrency": "you don't have enough of the following currencies",
+    "TRANSFERSTUFF.howManyItem": "How many items do you want to move?",
+    "TRANSFERSTUFF.one": "One",
+    "TRANSFERSTUFF.half": "Half",
+    "TRANSFERSTUFF.max": "Max",
+    "TRANSFERSTUFF.stackItems": "Stack items of the same type",
+    "TRANSFERSTUFF.transfer": "Transfer",
+    "TRANSFERSTUFF.howMuchCurrency": "How much do you want to move?",
+    "TRANSFERSTUFF.currency": "Currency"
 }

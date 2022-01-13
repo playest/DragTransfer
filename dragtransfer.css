@@ -1,3 +1,3 @@
-.dragtransfer input:invalid {
+.transferstuff input:invalid {
     background-color: red;
 }

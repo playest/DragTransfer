@@ -1,8 +1,8 @@
 "use strict";
 
 export function registerSettings() {
-    const moduleName = 'DragTransfer';
-    const MODNAME = 'DRAGTANSFER';
+    const moduleName = 'TransferStuff';
+    const MODNAME = 'TRANSFERSTUFF';
 
     game.settings.register(moduleName, 'actorTransferSame', {
         name: game.i18n.localize(MODNAME + ".actorTransferSame"),
