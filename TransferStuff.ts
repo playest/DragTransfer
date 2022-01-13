@@ -1,4 +1,3 @@
-// TransferStuff
 import type { FoundryVTT } from './fvtt';
 import { registerSettings } from './settings.js';
 
