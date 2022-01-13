@@ -19,12 +19,14 @@ pack_archive_name="$npm_package_name-$npm_package_version.tgz"
 if [ -f "$pack_archive_name" ]
 then
     echo "Pack archive ($pack_archive_name) detected."
-    tar xzf "$pack_archive_name" -C "releases/"
-    cd "releases/"
+    mkdir -p "releases/v$npm_package_version/"
+    tar xzf "$pack_archive_name" -C "releases/v$npm_package_version/"
+    cd "releases/v$npm_package_version/"
     mv "package" "$npm_package_name-$npm_package_version"
     zip -r "$npm_package_name-$npm_package_version.zip" "$npm_package_name-$npm_package_version"
-    cd ..
-    rm -r "releases/$npm_package_name-$npm_package_version"
+    cd ../..
+    rm -r "releases/v$npm_package_version/$npm_package_name-$npm_package_version"
+    cp "module.json" "releases/v$npm_package_version/"
 else
     echo "Pack archive ($pack_archive_name) not found. Will not do anything."
 fi
