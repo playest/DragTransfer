@@ -1,7 +1,7 @@
 {
   "name": "DragTransfer",
   "title": "Drag'n'Transfer",
-  "description": "Move (rather than copy) items drag-and-dropped between character sheets.",
+  "description": "Move (rather than copy) items and currency drag-and-dropped between character sheets.",
   "author": "David Zvekic",
   "version": "1.2.3",
   "compatibleCoreVersion": "0.8.7",
