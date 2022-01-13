@@ -1,15 +1,11 @@
 // DragTransfer
 // (c) 2021 David Zvekic
-
-"use strict";
-
-
 import { FoundryVTT } from './fvtt.js';
 import { registerSettings } from './settings/settings.js';
 
 let dragTransfer = new Object();
 
-let dragTransferTransaction = {};
+const MODNAME = 'DRAGTANSFER';
 
 interface DragTransferData {
     originalActorId: FoundryVTT.ActorId,
@@ -118,7 +114,7 @@ interface DragTransferData {
         }
 
         if(errors.length !== 0) {
-            ui.notifications.error("DragTransfer: you don't have enough of the following currencies " + errors.join(", "));
+            ui.notifications.error("DragTransfer: " + game.i18n.localize(MODNAME + ".notEnoughCurrency") + " " + errors.join(", "));
         }
         else {
             const targetActor = game.actors.get(targetActorId)!;
@@ -142,16 +138,16 @@ interface DragTransferData {
               <form>
                 <div class="form-group">
                   <input type="number" class="transferedQuantity" value="${originalQuantity}" />
-                  <button onclick="this.parentElement.querySelector('.transferedQuantity').value = '1'">One</button>
-                  <button onclick="this.parentElement.querySelector('.transferedQuantity').value = '${Math.round(originalQuantity / 2)}'">Half</button>
-                  <button onclick="this.parentElement.querySelector('.transferedQuantity').value = '${originalQuantity}'">Max</button>
-                  <label style="flex: none;"><input style="vertical-align: middle;" type="checkbox" class="stack" checked="checked" /> Stack items of the same type</label>
+                  <button onclick="this.parentElement.querySelector('.transferedQuantity').value = '1'">${game.i18n.localize(MODNAME + ".one")}</button>
+                  <button onclick="this.parentElement.querySelector('.transferedQuantity').value = '${Math.round(originalQuantity / 2)}'">${game.i18n.localize(MODNAME + ".half")}</button>
+                  <button onclick="this.parentElement.querySelector('.transferedQuantity').value = '${originalQuantity}'">${game.i18n.localize(MODNAME + ".max")}</button>
+                  <label style="flex: none;"><input style="vertical-align: middle;" type="checkbox" class="stack" checked="checked" /> ${game.i18n.localize(MODNAME + ".stackItems")}</label>
                 </div>
               </form>`,
             buttons: {
                 transfer: {
                     //icon: "<i class='fas fa-check'></i>",
-                    label: `Transfer`,
+                    label: game.i18n.localize(MODNAME + ".transfer"),
                     callback: html => {
                         const transferedQuantity = parseInt(html.find('input.transferedQuantity').val(), 10);
                         const stackItems = html.find('input.stack').is(":checked");
@@ -159,16 +155,14 @@ interface DragTransferData {
                     }
                 }
             },
-            default: 'transfer',
-            close: html => {
-            }
+            default: 'transfer'
         });
         transferDialog.render(true);
     }
 
     function showCurrencyTransferDialog(sourceActorId: FoundryVTT.ActorId, targetActorId: FoundryVTT.ActorId) {
         let transferDialog = new Dialog({
-            title: 'How much do you want to move?',
+            title: game.i18n.localize(MODNAME + ".howMuchCurrency"),
             content: `
               <form>
                 <div class="form-group">
@@ -188,9 +182,7 @@ interface DragTransferData {
                     }
                 }
             },
-            default: 'transfer',
-            close: html => {
-            }
+            default: game.i18n.localize(MODNAME + ".transfer")
         });
         transferDialog.render(true);
     }
@@ -219,7 +211,7 @@ interface DragTransferData {
                     const originalQuantity = futureItem.data.data.quantity;
                     const targetActorId = dragTargetActor.data._id;
                     const sourceActorId = futureItem.actorId;
-                    if(futureItem.data.name === "Currency") {
+                    if(futureItem.data.name === game.i18n.localize(MODNAME + ".currency")) {
                         console.log(dragTargetActor, sheet, futureItem);
                         showCurrencyTransferDialog(sourceActorId, targetActorId);
                         return false;

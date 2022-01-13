@@ -112,6 +112,6 @@ export namespace FoundryVTT {
         content: string;
         buttons: {[buttonName: string]: {label: string, callback: (html: JQuery) => void}};
         default: string;
-        close(html: JQuery): void;
+        close?(html: JQuery): void;
     }
 }
