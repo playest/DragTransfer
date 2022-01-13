@@ -15,3 +15,11 @@ Version number must be updated in:
     - version field (should probably be updated by running `npm install`)
 
 `/scripts/check_same_version.sh` checks that all version number.
+
+## Make a release
+
+`npm run packzip` will put all the files you need for a release in "/releases/vx.y.z". If will run a lot of checks so know that you need to:
+
+- have all version number be identical everywhere
+- have no uncommited work
+- have the last commit tagged with the current version number ("v1.2.3" if package.json says `version: "1.2.3"` for example)
