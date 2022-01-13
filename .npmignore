@@ -1,7 +1,11 @@
 *.ts
 *.md
 *.scss
+*.tgz
+*.zip
 /package.json
 /package-lock.json
 /tsconfig.json
+/releases
+/scripts
 /.git*
