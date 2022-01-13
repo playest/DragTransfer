@@ -34,6 +34,13 @@ then
     err=4
 fi
 
+module_json_download_tgz_version=`echo $module_json_download | grep -o -- '-[0-9]\+\.[0-9]\+\.[1-9]\+\.tgz$' | cut -c 2- | sed 's/\.tgz$//'`
+if [ "$module_json_download_tgz_version" != "$package_json_version" ]
+then
+    echo "Different version number in package.json ($package_json_version) and module.json/download/tgz ($module_json_download_version)." >&2
+    err=5
+fi
+
 if [ "$err" -ne 0 ]
 then
     exit "$err"
