@@ -14,8 +14,8 @@
   "compatibleCoreVersion": "9",
   "minimumCoreVersion": "9",
   "url":"https://github.com/playest/TransferStuff/",
-  "manifest": "https://github.com/playest/TransferStuff/releases/download/v1.2.3/module.json",
-  "download": "https://github.com/playest/TransferStuff/releases/download/v1.2.3/TransferStuff.zip",
+  "manifest": "https://github.com/playest/TransferStuff/releases/download/v1.2.4/module.json",
+  "download": "https://github.com/playest/TransferStuff/releases/download/v1.2.4/TransferStuff.zip",
   "esmodules": [ "TransferStuff.js" ],
   "styles": [ "TransferStuff.css" ],
   "languages": [
