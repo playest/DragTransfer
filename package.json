@@ -21,9 +21,11 @@
     "url": "https://github.com/playest/DragTransfer/issues"
   },
   "homepage": "https://github.com/playest/DragTransfer#readme",
-  "funding": [{
-    "type" : "patreon",
-    "url" : "https://www.patreon.com/playest"
-  }],
+  "funding": [
+    {
+      "type": "patreon",
+      "url": "https://www.patreon.com/playest"
+    }
+  ],
   "private": true
 }
