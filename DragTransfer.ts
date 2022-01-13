@@ -108,7 +108,7 @@ interface DragTransferData {
         let errors = [];
         for(let c of currencies) {
             const amount = parseInt(html.find("." + c).val(), 10);
-            if(amount > sourceActor.data.data.currency[c]) {
+            if(amount < 0 || amount > sourceActor.data.data.currency[c]) {
                 errors.push(c);
             }
         }
@@ -161,16 +161,17 @@ interface DragTransferData {
     }
 
     function showCurrencyTransferDialog(sourceActorId: FoundryVTT.ActorId, targetActorId: FoundryVTT.ActorId) {
+        const sourceActor = game.actors.get(sourceActorId)!;
         let transferDialog = new Dialog({
             title: game.i18n.localize(MODNAME + ".howMuchCurrency"),
             content: `
               <form>
                 <div class="form-group">
-                  Platinum: <input type="number" class="currency pp" value="0" />
-                  Gold: <input type="number" class="currency gp" value="0" />
-                  Electrum: <input type="number" class="currency ep" value="0" />
-                  Silver: <input type="number" class="currency sp" value="0" />
-                  Copper: <input type="number" class="currency cp" value="1" />
+                  Platinum: <input type="number" class="currency pp" value="0" min="0" max="${sourceActor.data.data.currency.pp}" />
+                  Gold: <input type="number" class="currency gp" value="0" min="0" max="${sourceActor.data.data.currency.gp}" />
+                  Electrum: <input type="number" class="currency ep" value="0" min="0" max="${sourceActor.data.data.currency.ep}" />
+                  Silver: <input type="number" class="currency sp" value="0" min="0" max="${sourceActor.data.data.currency.sp}" />
+                  Copper: <input type="number" class="currency cp" value="0" min="0" max="${sourceActor.data.data.currency.cp}" />
                 </div>
               </form>`,
             buttons: {

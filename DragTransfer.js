@@ -1,9 +1,6 @@
-// DragTransfer
-// (c) 2021 David Zvekic
-"use strict";
 import { registerSettings } from './settings/settings.js';
 var dragTransfer = new Object();
-var dragTransferTransaction = {};
+var MODNAME = 'DRAGTANSFER';
 (function () {
     function isAlt() {
         // check if Alt and only Alt is being pressed during the drop event.
@@ -94,12 +91,12 @@ var dragTransferTransaction = {};
         for (var _i = 0, currencies_1 = currencies; _i < currencies_1.length; _i++) {
             var c = currencies_1[_i];
             var amount = parseInt(html.find("." + c).val(), 10);
-            if (amount > sourceActor.data.data.currency[c]) {
+            if (amount < 0 || amount > sourceActor.data.data.currency[c]) {
                 errors.push(c);
             }
         }
         if (errors.length !== 0) {
-            ui.notifications.error("DragTransfer: you don't have enough of the following currencies " + errors.join(", "));
+            ui.notifications.error("DragTransfer: " + game.i18n.localize(MODNAME + ".notEnoughCurrency") + " " + errors.join(", "));
         }
         else {
             var targetActor = game.actors.get(targetActorId);
@@ -119,11 +116,11 @@ var dragTransferTransaction = {};
         var originalActor = game.actors.get(originalActorId);
         var transferDialog = new Dialog({
             title: 'How many items do you want to move?',
-            content: "\n              <form>\n                <div class=\"form-group\">\n                  <input type=\"number\" class=\"transferedQuantity\" value=\"" + originalQuantity + "\" />\n                  <button onclick=\"this.parentElement.querySelector('.transferedQuantity').value = '1'\">One</button>\n                  <button onclick=\"this.parentElement.querySelector('.transferedQuantity').value = '" + Math.round(originalQuantity / 2) + "'\">Half</button>\n                  <button onclick=\"this.parentElement.querySelector('.transferedQuantity').value = '" + originalQuantity + "'\">Max</button>\n                  <label style=\"flex: none;\"><input style=\"vertical-align: middle;\" type=\"checkbox\" class=\"stack\" checked=\"checked\" /> Stack items of the same type</label>\n                </div>\n              </form>",
+            content: "\n              <form>\n                <div class=\"form-group\">\n                  <input type=\"number\" class=\"transferedQuantity\" value=\"" + originalQuantity + "\" />\n                  <button onclick=\"this.parentElement.querySelector('.transferedQuantity').value = '1'\">" + game.i18n.localize(MODNAME + ".one") + "</button>\n                  <button onclick=\"this.parentElement.querySelector('.transferedQuantity').value = '" + Math.round(originalQuantity / 2) + "'\">" + game.i18n.localize(MODNAME + ".half") + "</button>\n                  <button onclick=\"this.parentElement.querySelector('.transferedQuantity').value = '" + originalQuantity + "'\">" + game.i18n.localize(MODNAME + ".max") + "</button>\n                  <label style=\"flex: none;\"><input style=\"vertical-align: middle;\" type=\"checkbox\" class=\"stack\" checked=\"checked\" /> " + game.i18n.localize(MODNAME + ".stackItems") + "</label>\n                </div>\n              </form>",
             buttons: {
                 transfer: {
                     //icon: "<i class='fas fa-check'></i>",
-                    label: "Transfer",
+                    label: game.i18n.localize(MODNAME + ".transfer"),
                     callback: function (html) {
                         var transferedQuantity = parseInt(html.find('input.transferedQuantity').val(), 10);
                         var stackItems = html.find('input.stack').is(":checked");
@@ -131,16 +128,15 @@ var dragTransferTransaction = {};
                     }
                 }
             },
-            default: 'transfer',
-            close: function (html) {
-            }
+            default: 'transfer'
         });
         transferDialog.render(true);
     }
     function showCurrencyTransferDialog(sourceActorId, targetActorId) {
+        var sourceActor = game.actors.get(sourceActorId);
         var transferDialog = new Dialog({
-            title: 'How much do you want to move?',
-            content: "\n              <form>\n                <div class=\"form-group\">\n                  Platinum: <input type=\"number\" class=\"currency pp\" value=\"0\" />\n                  Gold: <input type=\"number\" class=\"currency gp\" value=\"0\" />\n                  Electrum: <input type=\"number\" class=\"currency ep\" value=\"0\" />\n                  Silver: <input type=\"number\" class=\"currency sp\" value=\"0\" />\n                  Copper: <input type=\"number\" class=\"currency cp\" value=\"1\" />\n                </div>\n              </form>",
+            title: game.i18n.localize(MODNAME + ".howMuchCurrency"),
+            content: "\n              <form>\n                <div class=\"form-group\">\n                  Platinum: <input type=\"number\" class=\"currency pp\" value=\"0\" min=\"0\" max=\"" + sourceActor.data.data.currency.pp + "\" />\n                  Gold: <input type=\"number\" class=\"currency gp\" value=\"0\" min=\"0\" max=\"" + sourceActor.data.data.currency.gp + "\" />\n                  Electrum: <input type=\"number\" class=\"currency ep\" value=\"0\" min=\"0\" max=\"" + sourceActor.data.data.currency.ep + "\" />\n                  Silver: <input type=\"number\" class=\"currency sp\" value=\"0\" min=\"0\" max=\"" + sourceActor.data.data.currency.sp + "\" />\n                  Copper: <input type=\"number\" class=\"currency cp\" value=\"0\" min=\"0\" max=\"" + sourceActor.data.data.currency.cp + "\" />\n                </div>\n              </form>",
             buttons: {
                 transfer: {
                     //icon: "<i class='fas fa-check'></i>",
@@ -150,9 +146,7 @@ var dragTransferTransaction = {};
                     }
                 }
             },
-            default: 'transfer',
-            close: function (html) {
-            }
+            default: game.i18n.localize(MODNAME + ".transfer")
         });
         transferDialog.render(true);
     }
@@ -178,7 +172,7 @@ var dragTransferTransaction = {};
                     var originalQuantity = futureItem.data.data.quantity;
                     var targetActorId = dragTargetActor.data._id;
                     var sourceActorId = futureItem.actorId;
-                    if (futureItem.data.name === "Currency") {
+                    if (futureItem.data.name === game.i18n.localize(MODNAME + ".currency")) {
                         console.log(dragTargetActor, sheet, futureItem);
                         showCurrencyTransferDialog(sourceActorId, targetActorId);
                         return false;
