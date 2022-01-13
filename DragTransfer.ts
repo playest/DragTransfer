@@ -1,7 +1,7 @@
 // DragTransfer
 // (c) 2021 David Zvekic
-import { FoundryVTT } from './fvtt.js';
-import { registerSettings } from './settings/settings.js';
+import { FoundryVTT } from './fvtt';
+import { registerSettings } from './settings';
 
 let dragTransfer = new Object();
 

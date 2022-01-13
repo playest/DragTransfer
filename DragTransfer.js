@@ -1,4 +1,4 @@
-import { registerSettings } from './settings/settings.js';
+import { registerSettings } from './settings';
 var dragTransfer = new Object();
 var MODNAME = 'DRAGTANSFER';
 (function () {
