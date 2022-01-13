@@ -1,0 +1,24 @@
+{
+  "name": "transferstuff",
+  "version": "1.2.4",
+  "description": "Move (rather than copy) items and currency drag-and-dropped between character sheets in FoundryVTT.",
+  "main": "TransferStuff.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/playest/DragTransfer.git"
+  },
+  "keywords": [
+    "foundryvtt",
+    "item",
+    "transfer"
+  ],
+  "author": "playest",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/playest/DragTransfer/issues"
+  },
+  "homepage": "https://github.com/playest/DragTransfer#readme"
+}
