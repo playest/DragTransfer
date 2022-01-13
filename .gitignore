@@ -1,1 +1,4 @@
 *.js
+*.tgz
+*.zip
+/releases

@@ -4,7 +4,8 @@
   "description": "Move (rather than copy) items and currency drag-and-dropped between character sheets in FoundryVTT.",
   "main": "TransferStuff.js",
   "scripts": {
-    "prepack": "./scripts/prepack.sh"
+    "prepackzip": "./scripts/prepack.sh",
+    "packzip": "./scripts/packzip.sh"
   },
   "repository": {
     "type": "git",
