@@ -1,6 +1,6 @@
 {
   "name": "transferstuff",
-  "version": "1.2.6",
+  "version": "1.2.7",
   "description": "Move (rather than copy) items and currency drag-and-dropped between character sheets in FoundryVTT.",
   "main": "TransferStuff.js",
   "scripts": {
