@@ -1,4 +1,4 @@
-This project is inspired by the [amazing work](https://github.com/David-Zvekic/DragTransfer) of David Zvekic [![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/davidzvekic).
+This project is inspired by the [amazing work](https://github.com/David-Zvekic/DragTransfer) of [David Zvekic](https://ko-fi.com/davidzvekic).
 
 **TransferStuff**, a module for Foundry VTT.
 
