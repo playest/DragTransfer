@@ -14,7 +14,7 @@ Version number must be updated in:
 - /package-lock.json
     - version field (should probably be updated by running `npm install`)
 
-`/scripts/check_same_version.sh` checks that all version number.
+`/scripts/check_same_version.sh` checks that all version numbers are identical.
 
 ## Make a release
 
