@@ -137,7 +137,7 @@ interface DragTransferData {
             content: `
               <form>
                 <div class="form-group">
-                  <input type="number" class="transferedQuantity" value="${originalQuantity}" />
+                  <input type="number" class="transferedQuantity" value="${originalQuantity}" min="0" max="${originalQuantity}" />
                   <button onclick="this.parentElement.querySelector('.transferedQuantity').value = '1'">${game.i18n.localize(MODNAME + ".one")}</button>
                   <button onclick="this.parentElement.querySelector('.transferedQuantity').value = '${Math.round(originalQuantity / 2)}'">${game.i18n.localize(MODNAME + ".half")}</button>
                   <button onclick="this.parentElement.querySelector('.transferedQuantity').value = '${originalQuantity}'">${game.i18n.localize(MODNAME + ".max")}</button>
