@@ -84,6 +84,7 @@ export namespace FoundryVTT {
                 currency: Record<string, number>
             }
         },
+        permission: number,
         createEmbeddedDocuments(type: "Item", items: FutureItem["data"][]): void,
         update(pathsAndValues: Record<string, unknown>),
     }

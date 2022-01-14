@@ -186,6 +186,11 @@ const MODNAME = 'TRANSFERSTUFF';
             return;  // ignore when Alt is pressed to drop.
         }
 
+        if(dragTargetActor.permission != 3) {
+            ui.notifications.error("TransferStuff | You don't have the permissions to transfer items here");
+            return;
+        }
+
         if(futureItem.type == "Item" && futureItem.actorId) {
             if(!dragTargetActor.data._id) {
                 console.warn("TransferStuff | target has no data._id?", dragTargetActor);
