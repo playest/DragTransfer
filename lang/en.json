@@ -13,7 +13,7 @@
     "TRANSFERSTUFF.howMuchCurrency": "How much do you want to move?",
     "TRANSFERSTUFF.currency": "Currency",
     "TRANSFERSTUFF.enableCurrencyTransfer": "Enable currency transfer",
-    "TRANSFERSTUFF.enableCurrencyTransferHint": "When moving an object named \"Currency\" it will open a dialog to transfer money instead of transfering the actual item.",
+    "TRANSFERSTUFF.enableCurrencyTransferHint": "When moving an object named \"Currency\" is transfered it will open a dialog to transfer money instead of transfering the actual item.",
     "TRANSFERSTUFF.enableItemTransfer": "Enable item transfer",
     "TRANSFERSTUFF.enableItemTransferHint": "Even if it's the main feature of this module you can still disable item transfer. Know that you can temporarily disable the transfer feature by pressing the alt key while you move the item."
 }

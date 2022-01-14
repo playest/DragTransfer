@@ -1,0 +1,19 @@
+{
+    "TRANSFERSTUFF.actorTransferSame": "Autoriser le transfert entre acteurs du même type.",
+    "TRANSFERSTUFF.actorTransferSameHint": "Si désactivé uniquement les couples définis comme acteurs compatibles seront valides.",
+    "TRANSFERSTUFF.actorTransferPairs": "Acteurs compatibles:",
+    "TRANSFERSTUFF.actorTransferPairsHint": "Le corps d'un objet JSON contenant des couples clé-valeur d'acteurs compatibles. Par défaut ce module fonctionne uniquement entre des acteurs de même type mais certain systèmes pourraient permettre d'autres combinaison. Exemple 1 : \"character\":\"synthetic\",\"synthetic\":\"vehicles\",\"vehicles\":\"character\". Example 2 (pour DnD5e): \"character\":\"vehicle\",\"vehicle\":\"character\" qui permettrait de transférer des objets entre des personnages et des vehicules. Vous pouvez aussi avoir plusieurs acteurs en tant que destination valide, exemple 3 : \"character\":[\"vehicle\", \"character\"],\"vehicle\":\"character\" permettrait de transférer depuis un personnage vers un vehicule, depuis un personnage vers un personnage mais PAS depuis un vehicule vers un vehicule (sauf si l'option \"autoriser le transfert entre acteurs du même type\" est activé).",
+    "TRANSFERSTUFF.notEnoughCurrency": "vous n'avez pas assez de devises",
+    "TRANSFERSTUFF.howManyItem": "Combien d'objets voulez-vous transférer ?",
+    "TRANSFERSTUFF.one": "Un",
+    "TRANSFERSTUFF.half": "La moitié",
+    "TRANSFERSTUFF.max": "Tout",
+    "TRANSFERSTUFF.stackItems": "Grouper les objets identiques",
+    "TRANSFERSTUFF.transfer": "Transférer",
+    "TRANSFERSTUFF.howMuchCurrency": "Combien voulez-vous transférez ?",
+    "TRANSFERSTUFF.currency": "Devise",
+    "TRANSFERSTUFF.enableCurrencyTransfer": "Activer le transfert de devises",
+    "TRANSFERSTUFF.enableCurrencyTransferHint": "Quand un objet nommé \"Devise\" est transféré cela ouvrir une fenêtre pour transférer de l'argent plutôt que l'objet lui-même.",
+    "TRANSFERSTUFF.enableItemTransfer": "Activer le transfer d'objet",
+    "TRANSFERSTUFF.enableItemTransferHint": "Même s'il s'agit de la fonctionnalité principale de ce module vous pouvez désactiver le transfert d'objet. Sachez que vous pouvez le désactiver temporairement en appuyant sur la touche alt de votre clavier pendant que vous faites glisser l'objet vers sa destination."
+}
