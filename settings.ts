@@ -12,6 +12,24 @@ export function registerSettings() {
     const moduleName = 'TransferStuff';
     const MODNAME = 'TRANSFERSTUFF';
 
+    game.settings.register(moduleName, 'enableItemTransfer', {
+        name: game.i18n.localize(MODNAME + ".enableItemTransfer"),
+        hint: game.i18n.localize(MODNAME + ".enableItemTransferHint"),
+        scope: 'world',
+        config: true,
+        type: Boolean,
+        default: true,
+    });
+
+    game.settings.register(moduleName, 'enableCurrencyTransfer', {
+        name: game.i18n.localize(MODNAME + ".enableCurrencyTransfer"),
+        hint: game.i18n.localize(MODNAME + ".enableCurrencyTransferHint"),
+        scope: 'world',
+        config: true,
+        type: Boolean,
+        default: true,
+    });
+
     game.settings.register(moduleName, 'actorTransferSame', {
         name: game.i18n.localize(MODNAME + ".actorTransferSame"),
         hint: game.i18n.localize(MODNAME + ".actorTransferSameHint"),

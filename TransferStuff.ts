@@ -201,16 +201,13 @@ const MODNAME = 'TRANSFERSTUFF';
                     const originalQuantity = futureItem.data.data.quantity;
                     const targetActorId = dragTargetActor.data._id;
                     const sourceActorId = futureItem.actorId;
-                    if(futureItem.data.name === game.i18n.localize(MODNAME + ".currency")) {
+                    if(game.settings.get('TransferStuff', 'enableCurrencyTransfer') && futureItem.data.name === game.i18n.localize(MODNAME + ".currency")) {
                         showCurrencyTransferDialog(sourceActorId, targetActorId);
                         return false;
                     }
-                    else if(originalQuantity >= 1) {
+                    else if(game.settings.get('TransferStuff', 'enableItemTransfer') && originalQuantity >= 1) {
                         showItemTransferDialog(originalQuantity, sourceActorId, targetActorId, futureItem.data._id, futureItem);
                         return false;
-                    }
-                    else {
-                        deleteItem(sourceActor, futureItem.data._id);
                     }
                 }
             }
