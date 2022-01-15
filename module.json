@@ -13,7 +13,7 @@
   "manifest": "https://github.com/playest/TransferStuff/releases/download/v1.2.10/module.json",
   "download": "https://github.com/playest/TransferStuff/releases/download/v1.2.10/transferstuff-1.2.10.zip",
   "esmodules": [ "TransferStuff.js" ],
-  "styles": [ "TransferStuff.css" ],
+  "styles": [ "transferstuff.css" ],
   "license": "LICENSE",
   "readme": "README.md",
   "languages": [
