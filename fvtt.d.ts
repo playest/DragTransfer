@@ -1,6 +1,7 @@
 global {
     export declare const game: {
         actors: Map<FoundryVTT.ActorId, FoundryVTT.Actor>,
+        scenes: Map<FoundryVTT.SceneId, FoundryVTT.Scene>,
         keyboard: any,
         settings: any,
         i18n: any,
@@ -35,18 +36,28 @@ export namespace FoundryVTT {
     type ActorType = "character" | "npc" | "vehicle";
     type DocumentType = "Item" | "Character";
 
-    interface Sheet {
+    type Items = Map<ItemId, Item>;
 
+    interface Sheet {
+        actor: Actor
     }
 
     interface Document {
+    }
+
+    interface Scene {
+        tokens: Map<TokenId, TokenDocument5e>
+    }
+
+    interface TokenDocument5e {
+        sheet: Sheet
     }
 
     interface FutureItemDataData {
         quantity: number,
     }
 
-    interface FutureItem<More = {}> {
+    interface BaseFutureItem {
         type: string,
         actorId: ActorId,
         data: {
@@ -58,12 +69,25 @@ export namespace FoundryVTT {
         }
     }
 
+    interface FutureItemFromToken extends BaseFutureItem {
+        sceneId: SceneId,
+        tokenId: TokenId,
+    }
+
+    interface FutureItemFromActor extends BaseFutureItem {
+        sceneId: null,
+        tokenId: null,
+    }
+
+    type FutureItem = FutureItemFromToken | FutureItemFromActor;
+
     interface ItemDataData {
         quantity: number,
     }
 
     interface Item<More = {}> extends Document {
         parent: Actor,
+        actor: Actor,
         name: string,
         data: {
             type: unknown,
@@ -76,15 +100,17 @@ export namespace FoundryVTT {
     interface Actor extends Document {
         deleteEmbeddedDocuments?(type: DocumentType, documentIds: DocumentId[]): void,
         deleteOwnedItem(documentId: DocumentId): void,
-        items: Map<ItemId, Item>,
+        items: Items,
         data : {
             _id: ActorId,
             type: ActorType,
             data: {
                 currency: Record<string, number>
-            }
+            },
+            items: Items
         },
         permission: number,
+        sheet: Sheet,
         createEmbeddedDocuments(type: "Item", items: FutureItem["data"][]): void,
         update(pathsAndValues: Record<string, unknown>),
     }
@@ -101,6 +127,14 @@ export namespace FoundryVTT {
 
     interface UserId extends string {
         private user: void;
+    }
+
+    interface SceneId extends string {
+        private scene: void;
+    }
+
+    interface TokenId extends string {
+        private token: void;
     }
 
     class Dialog {

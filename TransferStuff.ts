@@ -43,28 +43,27 @@ const MODNAME = 'TRANSFERSTUFF';
         return false;
     }
 
-    function deleteItem(actor: FoundryVTT.Actor, itemId: FoundryVTT.ItemId) {
-        if(actor.deleteEmbeddedDocuments != undefined) {
-            actor.deleteEmbeddedDocuments("Item", [itemId]);
+    function deleteItem(sheet: FoundryVTT.Sheet, itemId: FoundryVTT.ItemId) {
+        if(sheet.actor.deleteEmbeddedDocuments != undefined) {
+            sheet.actor.deleteEmbeddedDocuments("Item", [itemId]);
         }
         else {
-            actor.deleteOwnedItem(itemId);
+            sheet.actor.deleteOwnedItem(itemId);
         }
     }
 
-    function deleteItemIfZero(actor: FoundryVTT.Actor, itemId: FoundryVTT.ItemId) {
-        const item = actor.items.get(itemId);
+    function deleteItemIfZero(sheet: FoundryVTT.Sheet, itemId: FoundryVTT.ItemId) {
+        const item = sheet.actor.data.items.get(itemId);
         if(item == undefined) {
             return;
         }
         if(item.data.data.quantity <= 0) {
-            deleteItem(actor, itemId);
+            deleteItem(sheet, itemId);
         }
     }
 
-    function transferItem(originalActor: FoundryVTT.Actor, targetActorId: FoundryVTT.ActorId, originalItemId: FoundryVTT.ItemId, createdItem: FoundryVTT.FutureItem, originalQuantity: number, transferedQuantity: number, stackItems: boolean) {
-        const originalItem = originalActor.items.get(originalItemId);
-        const targetActor = game.actors.get(targetActorId)!;
+    function transferItem(sourceSheet: FoundryVTT.Sheet, targetSheet: FoundryVTT.Sheet, originalItemId: FoundryVTT.ItemId, createdItem: FoundryVTT.FutureItem, originalQuantity: number, transferedQuantity: number, stackItems: boolean) {
+        const originalItem = sourceSheet.actor.items.get(originalItemId);
         if(originalItem == undefined) {
             console.error("Could not find the source item", originalItemId);
             return;
@@ -74,18 +73,18 @@ const MODNAME = 'TRANSFERSTUFF';
             const newOriginalQuantity = originalQuantity - transferedQuantity;
             let stacked = false; // will be true if a stack of item has been found and items have been stacked in it
             if(stackItems) {
-                const potentialStacks = targetActor.items.filter(i => i.name == originalItem.name && diffObject(createdItem, i) && i.data._id !== createdItem.data._id);
+                const potentialStacks = targetSheet.actor.data.items.filter(i => i.name == originalItem.name && diffObject(createdItem, i) && i.data._id !== createdItem.data._id);
                 if(potentialStacks.length >= 1) {
                     potentialStacks[0].update({ "data.quantity": potentialStacks[0].data.data.quantity + transferedQuantity });
-                    deleteItemIfZero(targetActor, createdItem.data._id);
+                    deleteItemIfZero(targetSheet, createdItem.data._id);
                     stacked = true;
                 }
             }
 
-            originalItem.update({ "data.quantity": newOriginalQuantity }).then((i) => deleteItemIfZero(i.parent, i.data._id));
+            originalItem.update({ "data.quantity": newOriginalQuantity }).then((i) => deleteItemIfZero(i.actor.sheet, i.data._id));
             if(stacked === false) {
                 createdItem.data.data.quantity = transferedQuantity;
-                targetActor.createEmbeddedDocuments("Item", [createdItem.data])
+                targetSheet.actor.createEmbeddedDocuments("Item", [createdItem.data])
             }
         }
         else {
@@ -93,14 +92,13 @@ const MODNAME = 'TRANSFERSTUFF';
         }
     }
 
-    function transferCurrency(html: JQuery, sourceActorId: FoundryVTT.ActorId, targetActorId: FoundryVTT.ActorId) {
+    function transferCurrency(html: JQuery, sourceSheet: FoundryVTT.Sheet, targetSheet: FoundryVTT.Sheet) {
         let currencies = ["pp", "gp", "ep", "sp", "cp"];
-        const sourceActor = game.actors.get(sourceActorId)!;
 
         let errors = [];
         for(let c of currencies) {
             const amount = parseInt(html.find("." + c).val(), 10);
-            if(amount < 0 || amount > sourceActor.data.data.currency[c]) {
+            if(amount < 0 || amount > sourceSheet.actor.data.data.currency[c]) {
                 errors.push(c);
             }
         }
@@ -109,18 +107,16 @@ const MODNAME = 'TRANSFERSTUFF';
             ui.notifications.error("TransferStuff | " + game.i18n.localize(MODNAME + ".notEnoughCurrency") + " " + errors.join(", "));
         }
         else {
-            const targetActor = game.actors.get(targetActorId)!;
             for(let c of currencies) {
                 const amount = parseInt(html.find("." + c).val(), 10);
                 const key = "data.currency." + c;
-                sourceActor.update({ [key]: sourceActor.data.data.currency[c] - amount });
-                targetActor.update({ [key]: targetActor.data.data.currency[c] + amount }); // key is between [] to force its evaluation
+                sourceSheet.actor.update({ [key]: sourceSheet.actor.data.data.currency[c] - amount });
+                targetSheet.actor.update({ [key]: targetSheet.actor.data.data.currency[c] + amount }); // key is between [] to force its evaluation
             }
         }
     }
 
-    function showItemTransferDialog(originalQuantity: number, originalActorId: FoundryVTT.ActorId, targetActorId: FoundryVTT.ActorId, originalItemId: FoundryVTT.ItemId, createdItem: FoundryVTT.FutureItem) {
-        const originalActor = game.actors.get(originalActorId)!;
+    function showItemTransferDialog(originalQuantity: number, sourceSheet: FoundryVTT.Sheet, targetSheet: FoundryVTT.Sheet, originalItemId: FoundryVTT.ItemId, createdItem: FoundryVTT.FutureItem) {
         let transferDialog = new Dialog({
             title: 'How many items do you want to move?',
             content: `
@@ -140,7 +136,7 @@ const MODNAME = 'TRANSFERSTUFF';
                     callback: html => {
                         const transferedQuantity = parseInt(html.find('input.transferedQuantity').val(), 10);
                         const stackItems = html.find('input.stack').is(":checked");
-                        transferItem(originalActor, targetActorId,originalItemId, createdItem, originalQuantity, transferedQuantity, stackItems);
+                        transferItem(sourceSheet, targetSheet, originalItemId, createdItem, originalQuantity, transferedQuantity, stackItems);
                     }
                 }
             },
@@ -149,18 +145,17 @@ const MODNAME = 'TRANSFERSTUFF';
         transferDialog.render(true);
     }
 
-    function showCurrencyTransferDialog(sourceActorId: FoundryVTT.ActorId, targetActorId: FoundryVTT.ActorId) {
-        const sourceActor = game.actors.get(sourceActorId)!;
+    function showCurrencyTransferDialog(sourceSheet: FoundryVTT.Sheet, targetSheet: FoundryVTT.Sheet) {
         let transferDialog = new Dialog({
             title: game.i18n.localize(MODNAME + ".howMuchCurrency"),
             content: `
               <form class="transferstuff">
                 <div class="form-group">
-                  Platinum: <input type="number" class="currency pp" value="0" min="0" max="${sourceActor.data.data.currency.pp}" />
-                  Gold: <input type="number" class="currency gp" value="0" min="0" max="${sourceActor.data.data.currency.gp}" />
-                  Electrum: <input type="number" class="currency ep" value="0" min="0" max="${sourceActor.data.data.currency.ep}" />
-                  Silver: <input type="number" class="currency sp" value="0" min="0" max="${sourceActor.data.data.currency.sp}" />
-                  Copper: <input type="number" class="currency cp" value="0" min="0" max="${sourceActor.data.data.currency.cp}" />
+                  Platinum: <input type="number" class="currency pp" value="0" min="0" max="${sourceSheet.actor.data.data.currency.pp}" />
+                  Gold: <input type="number" class="currency gp" value="0" min="0" max="${sourceSheet.actor.data.data.currency.gp}" />
+                  Electrum: <input type="number" class="currency ep" value="0" min="0" max="${sourceSheet.actor.data.data.currency.ep}" />
+                  Silver: <input type="number" class="currency sp" value="0" min="0" max="${sourceSheet.actor.data.data.currency.sp}" />
+                  Copper: <input type="number" class="currency cp" value="0" min="0" max="${sourceSheet.actor.data.data.currency.cp}" />
                 </div>
               </form>`,
             buttons: {
@@ -168,7 +163,7 @@ const MODNAME = 'TRANSFERSTUFF';
                     //icon: "<i class='fas fa-check'></i>",
                     label: `Transfer`,
                     callback: html => {
-                        transferCurrency(html, sourceActorId, targetActorId);
+                        transferCurrency(html, sourceSheet, targetSheet);
                     }
                 }
             },
@@ -181,37 +176,45 @@ const MODNAME = 'TRANSFERSTUFF';
         registerSettings();
     });
 
-    Hooks.on('dropActorSheetData', (dragTargetActor, sheet, futureItem) => {
+    Hooks.on('dropActorSheetData', (targetActor, targetSheet, futureItem) => {
         if(isAlt()) {
             return;  // ignore when Alt is pressed to drop.
         }
 
-        if(dragTargetActor.permission != 3) {
+        if(targetActor.permission != 3) {
             ui.notifications.error("TransferStuff | You don't have the permissions to transfer items here");
             return;
         }
 
         if(futureItem.type == "Item" && futureItem.actorId) {
-            if(!dragTargetActor.data._id) {
-                console.warn("TransferStuff | target has no data._id?", dragTargetActor);
+            if(!targetActor.data._id) {
+                console.warn("TransferStuff | target has no data._id?", targetActor);
                 return;
             }
-            if(dragTargetActor.data._id == futureItem.actorId) {
+            if(targetActor.data._id == futureItem.actorId) {
                 return;  // ignore dropping on self
+            }
+            let sourceSheet: FoundryVTT.Sheet;
+            if(futureItem.tokenId != null) {
+                //game.scenes.get("hyfUtn3VVPnVUpJe").tokens.get("OYwRVJ7crDyid19t").sheet.actor.items
+                sourceSheet = game.scenes.get(futureItem.sceneId)!.tokens.get(futureItem.tokenId)!.sheet;
+            }
+            else {
+                sourceSheet = game.actors.get(futureItem.actorId)!.sheet;
             }
             let sourceActor = game.actors.get(futureItem.actorId);
             if(sourceActor) {
                 /* if both source and target have the same type then allow deleting original item. this is a safety check because some game systems may allow dropping on targets that don't actually allow the GM or player to see the inventory, making the item inaccessible. */
-                if(checkCompatible(sourceActor.data.type, dragTargetActor.data.type, futureItem)) {
+                if(checkCompatible(sourceActor.data.type, targetActor.data.type, futureItem)) {
                     const originalQuantity = futureItem.data.data.quantity;
-                    const targetActorId = dragTargetActor.data._id;
+                    const targetActorId = targetActor.data._id;
                     const sourceActorId = futureItem.actorId;
                     if(game.settings.get('TransferStuff', 'enableCurrencyTransfer') && futureItem.data.name === game.i18n.localize(MODNAME + ".currency")) {
-                        showCurrencyTransferDialog(sourceActorId, targetActorId);
+                        showCurrencyTransferDialog(sourceSheet, targetSheet);
                         return false;
                     }
                     else if(game.settings.get('TransferStuff', 'enableItemTransfer') && originalQuantity >= 1) {
-                        showItemTransferDialog(originalQuantity, sourceActorId, targetActorId, futureItem.data._id, futureItem);
+                        showItemTransferDialog(originalQuantity, sourceSheet, targetSheet, futureItem.data._id, futureItem);
                         return false;
                     }
                 }
