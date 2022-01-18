@@ -21,12 +21,12 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: module-manifest
-          path: releases/nightly/module.json
+          path: releases/vnightly/module.json
       - name: Upload module archive
         uses: actions/upload-artifact@v2
         with:
           name: module-archive
-          path: releases/nightly/transfer-stuff-nightly.zip
+          path: releases/vnightly/transfer-stuff-nightly.zip
   update-release: # add the artifacts to the release
     needs: build
     runs-on: ubuntu-latest
