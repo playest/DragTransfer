@@ -17,6 +17,7 @@ jobs:
       - run: npm run packzip
         env:
           NO_CHECK: 1
+      - run: ls -R
       - name: Upload module manifest
         uses: actions/upload-artifact@v2
         with:
