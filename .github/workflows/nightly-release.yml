@@ -50,3 +50,5 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           artifacts: './module.json, ./transfer-stuff-nightly.zip'
           tag: nightly
+          omitBody: true
+          omitBodyDuringUpdate: true
