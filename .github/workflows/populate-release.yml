@@ -18,7 +18,6 @@ jobs:
       - run: npm run packzip
         env:
           NO_CHECK: 1
-      - run: ls -R
       - name: Upload module manifest
         uses: actions/upload-artifact@v2
         with:
@@ -46,14 +45,11 @@ jobs:
       - name: Update Release with Files
         uses: ncipollo/release-action@v1
         with:
-          allowUpdates: true # Set this to false if you want to prevent updating existing releases
-          name: ${{ github.event.release.name }}
+          allowUpdates: true
           draft: false
           prerelease: false
           token: ${{ secrets.GITHUB_TOKEN }}
           artifacts: './module.json, ./transfer-stuff-${{ env.version }}.zip'
-          tag: ${{ github.event.release.tag_name }}
-          omitBody: true
+          tag: v${{ env.version }}
           omitBodyDuringUpdate: true
-          omitName: true
           omitNameDuringUpdate: true
