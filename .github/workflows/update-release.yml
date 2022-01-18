@@ -6,13 +6,13 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
+      - run: echo "version=`echo ${{ github.event.release.tag_name }} | cut -c 2-`" >> $GITHUB_ENV # remove the leading v from the version string ("v1.2.3" -> "1.2.3")
       - name: Setup Node.js environment
         uses: actions/setup-node@v2.5.1
         with:
           node-version: '16'
       - uses: actions/checkout@v2
       - run: npm install
-      - run: mkdir releases
       - run: npm run packzip
         env:
           NO_CHECK: 1
@@ -20,9 +20,9 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: module-manifest
-          path: path/v${{ github.event.release.tag_name }}/module.json
+          path: releases/v${{ env.version }}/module.json
       - name: Upload module archive
         uses: actions/upload-artifact@v2
         with:
           name: module-archive
-          path: path/v${{ github.event.release.tag_name }}/TransferStuff-${{ github.event.release.tag_name }}.zip
+          path: releases/v${{ env.version }}/transfer-stuff-${{ env.version }}.zip
