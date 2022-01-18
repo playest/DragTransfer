@@ -1,0 +1,53 @@
+name: Update Release
+on:
+  push:
+    branches:
+      - main
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v2.5.1
+        with:
+          node-version: '16'
+      - uses: actions/checkout@v2
+      - run: npm install
+      - run: npm run build
+      - run: npm run packzip
+        env:
+          NO_CHECK: 1
+      - name: Upload module manifest
+        uses: actions/upload-artifact@v2
+        with:
+          name: module-manifest
+          path: releases/nightly/module.json
+      - name: Upload module archive
+        uses: actions/upload-artifact@v2
+        with:
+          name: module-archive
+          path: releases/nightly/transfer-stuff-nightly.zip
+  update-release: # add the artifacts to the release
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get module-manifest
+        uses: actions/download-artifact@v2
+        with:
+          name: module-manifest
+      - name: Get module-archive
+        uses: actions/download-artifact@v2
+        with:
+          name: module-archive
+      - run: ls -R
+      - name: Update Release with Files
+        uses: ncipollo/release-action@v1
+        with:
+          allowUpdates: true
+          name: nightly
+          draft: false
+          prerelease: true
+          token: ${{ secrets.GITHUB_TOKEN }}
+          artifacts: './module.json, ./transfer-stuff-nightly.zip'
+          tag: ${{ github.event.release.tag_name }}
+          body: ${{ github.event.release.body }}
