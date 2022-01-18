@@ -1,11 +1,12 @@
 {
   "name": "transfer-stuff",
-  "version": "1.2.13",
+  "version": "1.2.15",
   "description": "Move (rather than copy) items and currency drag-and-dropped between character sheets in FoundryVTT.",
   "main": "TransferStuff.js",
   "scripts": {
     "prepackzip": "./scripts/prepack.sh",
-    "packzip": "./scripts/packzip.sh"
+    "packzip": "./scripts/packzip.sh",
+    "build": "./scripts/build.sh"
   },
   "repository": {
     "type": "git",
@@ -28,5 +29,8 @@
       "url": "https://www.patreon.com/playest"
     }
   ],
-  "private": true
+  "private": true,
+  "devDependencies": {
+    "typescript": "^4.5.4"
+  }
 }

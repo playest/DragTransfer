@@ -25,6 +25,8 @@ then
     err=3
 fi
 
+tsc -p .
+
 if [ "$err" -ne 0 ]
 then
     echo "Aborting."
