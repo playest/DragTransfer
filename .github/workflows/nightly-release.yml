@@ -49,5 +49,3 @@ jobs:
           prerelease: true
           token: ${{ secrets.GITHUB_TOKEN }}
           artifacts: './module.json, ./transfer-stuff-nightly.zip'
-          tag: ${{ github.event.release.tag_name }}
-          body: ${{ github.event.release.body }}
