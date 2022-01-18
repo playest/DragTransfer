@@ -49,3 +49,4 @@ jobs:
           prerelease: true
           token: ${{ secrets.GITHUB_TOKEN }}
           artifacts: './module.json, ./transfer-stuff-nightly.zip'
+          tag: nightly
