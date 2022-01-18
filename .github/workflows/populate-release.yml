@@ -1,4 +1,5 @@
-name: Update Release
+# Puts the module's archive and manifest into the release
+name: Populate Release
 on:
   release:
     types: [published]

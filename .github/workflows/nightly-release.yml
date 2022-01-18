@@ -1,3 +1,4 @@
+# Create a nightly release at every push
 name: Nightly Release
 on:
   push:
