@@ -1,0 +1,26 @@
+name: Update Release
+on:
+  release:
+    types: [published]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v2.5.1
+        with:
+          node-version: '16'
+      - uses: actions/checkout@v2
+      - run: npm install
+      - run: mkdir releases
+      - run: npm run packzip
+      - name: Upload module manifest
+        uses: actions/upload-artifact@v2
+        with:
+          name: module-manifest
+          path: path/v${{ github.event.release.tag_name }}/module.json
+      - name: Upload module archive
+        uses: actions/upload-artifact@v2
+        with:
+          name: module-archive
+          path: path/v${{ github.event.release.tag_name }}/TransferStuff-${{ github.event.release.tag_name }}.zip
