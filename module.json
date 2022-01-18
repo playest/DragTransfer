@@ -1,17 +1,17 @@
 {
-  "name": "TransferStuff",
+  "name": "transfer-stuff",
   "title": "Transfer Stuff",
   "description": "Move (rather than copy) items and currency drag-and-dropped between character sheets.",
   "authors": [{
       "name": "playest",
       "url": "https://playest.net"
   }],
-  "version": "1.2.11",
+  "version": "1.2.12",
   "compatibleCoreVersion": "9",
   "minimumCoreVersion": "9",
   "url":"https://github.com/playest/TransferStuff/",
-  "manifest": "https://github.com/playest/TransferStuff/releases/download/v1.2.11/module.json",
-  "download": "https://github.com/playest/TransferStuff/releases/download/v1.2.11/transferstuff-1.2.11.zip",
+  "manifest": "https://github.com/playest/TransferStuff/releases/download/v1.2.12/module.json",
+  "download": "https://github.com/playest/TransferStuff/releases/download/v1.2.12/transferstuff-1.2.12.zip",
   "esmodules": [ "TransferStuff.js" ],
   "styles": [ "transferstuff.css" ],
   "license": "LICENSE",
