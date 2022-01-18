@@ -1,5 +1,10 @@
 #! /bin/sh
 
+if [ "$1" = "--nocheck" -o "$NO_CHECK" = "1" ]
+then
+    exit 0
+fi
+
 git diff-index --quiet HEAD --
 
 if [ "$?" -ne 0 ]

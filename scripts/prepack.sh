@@ -1,5 +1,10 @@
 #! /bin/sh
 
+if [ "$1" = "--nocheck" -o "$NO_CHECK" = "1" ]
+then
+    exit 0
+fi
+
 err=0
 
 ./scripts/check_same_version.sh

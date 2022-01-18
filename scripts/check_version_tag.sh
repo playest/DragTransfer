@@ -1,5 +1,10 @@
 #! /bin/sh
 
+if [ "$1" = "--nocheck" -o "$NO_CHECK" = "1" ]
+then
+    exit 0
+fi
+
 module_json_version=`jq -r ".version" module.json`
 current_tag=`git tag --points-at HEAD`
 
