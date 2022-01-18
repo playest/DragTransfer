@@ -52,4 +52,7 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           artifacts: './module.json, ./transfer-stuff-${{ env.version }}.zip'
           tag: ${{ github.event.release.tag_name }}
-          body: ${{ github.event.release.body }}
+          omitBody: true
+          omitBodyDuringUpdate: true
+          omitName: true
+          omitNameDuringUpdate: true
