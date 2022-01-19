@@ -2,6 +2,11 @@ name: Build
 on:
   workflow_call:
     inputs:
+      name:
+        description: "The name of the build, will be equal to the version if not given, will override the version if given"
+        required: false
+        type: string
+        default: ""
       version:
         description: "The version number with a leading v. If not given it will default to the version field of the package.json file"
         required: false
@@ -13,6 +18,9 @@ on:
         type: string
         default: ""
     outputs:
+      name:
+        value: ${{ jobs.build.outputs.name }}
+        description: "The name given to the release"
       version:
         value: ${{ jobs.build.outputs.version }}
         description: "The computed version number"
@@ -26,6 +34,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     outputs:
+      name: ${{ steps.set_outputs.outputs.name }}
       version: ${{ steps.set_outputs.outputs.version }}
       manifest_filename: ${{ steps.set_outputs.outputs.manifest_filename }}
       archive_filename: ${{ steps.set_outputs.outputs.archive_filename }}
@@ -44,13 +53,18 @@ jobs:
           then
             version=$version-${{inputs.prerelease_identifier}};
           fi
+          if [ ! "${{inputs.name}}" ]
+          then
+            name=$version;
+          fi
           echo "version=$version" >> $GITHUB_ENV
+          echo "name=$name" >> $GITHUB_ENV
       - name: Set outputs # so that they can be reused by caller if necessary
         id: set_outputs
         run: |
           echo "::set-output name=version::${{ env.version }}"
           echo "::set-output name=manifest_filename::module.json"
-          echo "::set-output name=archive_filename::transfer-stuff-${{ env.version }}.zip"
+          echo "::set-output name=archive_filename::transfer-stuff-${{ env.name }}.zip"
       - name: Setup Node.js environment
         uses: actions/setup-node@v2.5.1
         with:
@@ -64,9 +78,9 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: module-manifest
-          path: releases/v${{ env.version }}/module.json
+          path: releases/v${{ env.name }}/module.json
       - name: Upload module archive
         uses: actions/upload-artifact@v2
         with:
           name: module-archive
-          path: releases/v${{ env.version }}/transfer-stuff-${{ env.version }}.zip
+          path: releases/v${{ env.name }}/transfer-stuff-${{ env.name }}.zip
