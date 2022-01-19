@@ -57,9 +57,9 @@ if [ -f "$pack_archive_name" ]
 then
     echo "Pack archive ($pack_archive_name) detected."
     mkdir -p "releases/$shortname/"
-    # Create updated module.json (with version number taken from package.json)
-    ./scripts/replace_version.sh $version $shortname "module.json" > "releases/$shortname/module.json"
     tar xzf "$pack_archive_name" -C "releases/$shortname/"
+    # Create updated module.json (with version number taken from package.json)
+    ./scripts/replace_version.sh "$version" "$shortname" "module.json" > "releases/$shortname/module.json"
     cd "releases/$shortname/"
     # Rename the directory
     mv "package" "$npm_package_name-$shortname"
@@ -70,6 +70,7 @@ then
     rm -r "releases/$shortname/$npm_package_name-$shortname"
 else
     echo "Pack archive ($pack_archive_name) not found. Will not do anything."
+    exit 1
 fi
 
 rm "$pack_archive_name"
