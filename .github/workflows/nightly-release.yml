@@ -6,7 +6,7 @@ on:
       - main
 jobs:
   build:
-    uses: ./.github/workflows/build.yml@main
+    uses: playest/TransferStuff/.github/workflows/build.yml@main
     with:
       version: "nightly"
   update-release: # add the artifacts to the release
