@@ -2,13 +2,19 @@ name: Build
 on:
   workflow_call:
     inputs:
-      version: # without the leading "v"
+      version:
         required: true
         type: string
+      leadingv: # says if the version parameter has a leading v or not, so that it can be removed
+        required: false
+        type: boolean
+        default: true
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
+      - run: | # remove the leading "v" from the version string ("v1.2.3" -> "1.2.3")
+          if [ "${{ inputs.leadingv }}" ]; then echo "version=`echo ${{ inputs.version }} | cut -c 2-`" >> $GITHUB_ENV; else echo "version=`echo ${{ inputs.version }}" >> $GITHUB_ENV; fi
       - name: Setup Node.js environment
         uses: actions/setup-node@v2.5.1
         with:
@@ -16,16 +22,16 @@ jobs:
       - uses: actions/checkout@v2
       - run: npm install
       - run: npm run build
-      - run: npm run packzip -- --set-version ${{ inputs.version }}
+      - run: npm run packzip -- --set-version ${{ env.version }}
         env:
           NO_CHECK: 1
       - name: Upload module manifest
         uses: actions/upload-artifact@v2
         with:
           name: module-manifest
-          path: releases/v${{ inputs.version }}/module.json
+          path: releases/v${{ env.version }}/module.json
       - name: Upload module archive
         uses: actions/upload-artifact@v2
         with:
           name: module-archive
-          path: releases/v${{ inputs.version }}/transfer-stuff-${{ inputs.version }}.zip
+          path: releases/v${{ env.version }}/transfer-stuff-${{ env.version }}.zip

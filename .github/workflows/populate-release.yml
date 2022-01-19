@@ -28,6 +28,10 @@ jobs:
         with:
           name: module-archive
           path: releases/v${{ env.version }}/transfer-stuff-${{ env.version }}.zip
+  build2:
+    uses: playest/TransferStuff/.github/workflows/build.yml@main # this should be replacable by .github/workflows/build.yml soon, see here: https://github.community/t/ref-head-in-reusable-workflows/203690/34
+    with:
+      version: ${{ github.event.release.tag_name }}
   update-release: # add the artifacts to the release
     needs: build
     runs-on: ubuntu-latest

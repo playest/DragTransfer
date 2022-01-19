@@ -6,9 +6,10 @@ on:
       - main
 jobs:
   build:
-    uses: playest/TransferStuff/.github/workflows/build.yml@main
+    uses: playest/TransferStuff/.github/workflows/build.yml@main # this should be replacable by .github/workflows/build.yml soon, see here: https://github.community/t/ref-head-in-reusable-workflows/203690/34
     with:
       version: "nightly"
+      leadingv: false
   update-release: # add the artifacts to the release
     needs: build
     runs-on: ubuntu-latest
