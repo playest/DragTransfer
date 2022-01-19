@@ -25,7 +25,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     outputs:
-      version: ${{ steps.output_version.outputs.version }}
+      version: ${{ steps.set_outputs.outputs.version }}
       manifest_filename: ${{ steps.set_outputs.outputs.version }}
       archive_filename: ${{ steps.set_outputs.outputs.version }}
     steps:
