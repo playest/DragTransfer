@@ -22,7 +22,7 @@ There is multiple way to install this module:
     - It may be **unstable**, old version often contains bug that have been fixed since then
     - You will get updates automatically this way, which is probably **not what you want** so you may want to lock the package
 - The **nightly way**
-    - Find the [nightly release](https://github.com/playest/TransferStuff/releases/tag/vnightly) on the [release page](https://github.com/playest/TransferStuff/releases)
+    - Find the [nightly release](https://github.com/playest/TransferStuff/releases/tag/nightly) on the [release page](https://github.com/playest/TransferStuff/releases)
     - Copy the link to the "module.json" file into "Add-on Modules / Install Module / Manifest URL"
     - It may be **unstable**
     - You will get updates automatically this way
