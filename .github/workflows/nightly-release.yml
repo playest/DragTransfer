@@ -32,7 +32,6 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           artifacts: './${{ needs.build.outputs.manifest_filename }}, ./${{ needs.build.outputs.archive_filename }}'
           tag: ${{ needs.build.outputs.version }}
-          omitBodyDuringUpdate: true
           omitNameDuringUpdate: true
           body: |
             ${{ github.event.release.body }}
