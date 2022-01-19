@@ -4,6 +4,37 @@ This project is inspired by the [amazing work](https://github.com/David-Zvekic/D
 
 Enable moving (rather than cloning) inventory anc currencies between actors by dragging and dropping.
 
+# Install
+
+There is multiple way to install this module:
+
+- The **FoundryVTT way**
+    - Search for "TransferStuff" into the search bar in your FoundryVTT interface at "Add-on Modules / Install Module"
+    - It should be stable
+    - You will get updates automatically when (and if) I update the new version into the FoundryVTT website
+- The **latest way**
+    - Copy [this URL](https://github.com/playest/TransferStuff/releases/latest/download/module.json) into "Add-on Modules / Install Module / Manifest URL"
+    - It should be stable
+    - You will **not** get updates automatically this way
+- The **old way**
+    - Choose your version on the [release page](https://github.com/playest/TransferStuff/releases)
+    - Copy the link to the "module.json" file into "Add-on Modules / Install Module / Manifest URL"
+    - It may be **unstable**, old version often contains bug that have been fixed since then
+    - You will **not** get updates automatically this way
+- The **nightly way**
+    - Find the [nightly release](https://github.com/playest/TransferStuff/releases/tag/nightly) on the [release page](https://github.com/playest/TransferStuff/releases)
+    - Copy the link to the "module.json" file into "Add-on Modules / Install Module / Manifest URL"
+    - It may be **unstable**
+    - You will get updates automatically this way
+- The **git way**
+    - Clone this repo into `<FoundryVTT Install Directory>/Data/modules/` and [build it](DEV.md)
+    - It may be **unstable**
+    - You will **not** get updates automatically this way
+
+In this section "automatic updates" refers to the update button in the "Add-on Modules" tab.
+
+# Features
+
 This tool is for GMs who want to move items between character sheets, without duplicating them. It can also potentially increase the quantity of the items if the same kind of item is already present on the second character sheet.
 
 Standard Foundry VTT behavior clones items when they are dragged and dropped from 1 actor-sheet to another. If you prefer the item to not be duplicated, this module might be what you are looking for: **TransferStuff** causes the item to be deleted from the original sheet when it is dropped onto another actor sheet.

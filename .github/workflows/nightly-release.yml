@@ -39,11 +39,11 @@ jobs:
         uses: ncipollo/release-action@v1
         with:
           allowUpdates: true
-          name: ${{ needs.build.outputs.version }}
+          name: v${{ needs.build.outputs.version }}
           draft: false
           prerelease: true
           token: ${{ secrets.GITHUB_TOKEN }}
           artifacts: './${{ needs.build.outputs.manifest_filename }}, ./${{ needs.build.outputs.archive_filename }}'
-          tag: ${{ needs.build.outputs.version }}
+          tag: v${{ needs.build.outputs.version }}
           omitNameDuringUpdate: true
           bodyFile: release_body.md
