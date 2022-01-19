@@ -8,8 +8,7 @@ jobs:
   build:
     uses: playest/TransferStuff/.github/workflows/build.yml@main # this should be replacable by .github/workflows/build.yml soon, see here: https://github.community/t/ref-head-in-reusable-workflows/203690/34
     with:
-      version: "nightly"
-      leadingv: false
+      prerelease_identifier: "nightly"
   update-release: # add the artifacts to the release
     needs: build
     runs-on: ubuntu-latest
@@ -44,6 +43,6 @@ jobs:
           prerelease: true
           token: ${{ secrets.GITHUB_TOKEN }}
           artifacts: './${{ needs.build.outputs.manifest_filename }}, ./${{ needs.build.outputs.archive_filename }}'
-          tag: v${{ needs.build.outputs.version }}
+          tag: vnightly
           omitNameDuringUpdate: true
           bodyFile: release_body.md
