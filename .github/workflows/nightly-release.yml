@@ -31,10 +31,10 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Prepare release body Files
         run: |
-          echo ${{ steps.get_release.outputs.body }}
+          echo "${{ steps.get_release.outputs.body }}"
           echo "==="
-          echo ${{ steps.get_release.outputs.body }} | grep -v '^sha:' > release_body.md
-          echo sha: ${{ github.sha }} >> release_body.md
+          echo "${{ steps.get_release.outputs.body }}" | grep -v '^sha:' > release_body.md
+          echo "sha: ${{ github.sha }}" >> release_body.md
           cat release_body.md
       - name: Update Release with Files
         uses: ncipollo/release-action@v1
