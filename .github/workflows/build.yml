@@ -31,11 +31,20 @@ jobs:
       archive_filename: ${{ steps.set_outputs.outputs.archive_filename }}
     steps:
       - uses: actions/checkout@v2
-      - run: | # remove the leading "v" from the version string ("v1.2.3" -> "1.2.3")
+      # remove the leading "v" from the version string ("v1.2.3" -> "1.2.3")
+      - run: |
           version="";
-          if [ ! "${{inputs.version}}" ]; then version=`jq -r .version package.json`; else version=`echo ${{ inputs.version }} | cut -c 2-`; fi
-          if [ ! "${{inputs.prerelease_identifier}}" ]; then version=$version-${{inputs.prerelease_identifier}} fi
-          echo "version=$version" >> $GITHUB_ENV;
+          if [ ! "${{inputs.version}}" ]
+          then
+            version=`jq -r .version package.json`;
+          else
+            version=`echo ${{ inputs.version }} | cut -c 2-`;
+          fi
+          if [ ! "${{inputs.prerelease_identifier}}" ]
+          then
+            version=$version-${{inputs.prerelease_identifier}};
+          fi
+          echo "version=$version" >> $GITHUB_ENV
       - name: Set outputs # so that they can be reused by caller if necessary
         id: set_outputs
         run: |
