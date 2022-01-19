@@ -22,6 +22,11 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: module-archive
+      - name: Prepare release body Files
+        run: |
+          jq -r '.client_payload.github.event.release.body' $GITHUB_EVENT_PATH | grep -v '^sha:' > release_body.md
+          echo sha: ${{ github.sha }} >> release_body.md
+          cat release_body.md
       - name: Update Release with Files
         uses: ncipollo/release-action@v1
         with:
@@ -33,6 +38,4 @@ jobs:
           artifacts: './${{ needs.build.outputs.manifest_filename }}, ./${{ needs.build.outputs.archive_filename }}'
           tag: ${{ needs.build.outputs.version }}
           omitNameDuringUpdate: true
-          body: |
-            ${{ github.event.release.body }}
-            sha: ${{ github.sha }}
+          bodyFile: release_body.md
