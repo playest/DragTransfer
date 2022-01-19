@@ -59,17 +59,13 @@ then
     mkdir -p "releases/$shortname/"
     tar xzf "$pack_archive_name" -C "releases/$shortname/"
     # Create updated module.json (with version number taken from package.json)
-    echo 1; read a
     ./scripts/replace_version.sh "$version" "$shortname" "module.json" > "releases/$shortname/module.json"
     cd "releases/$shortname/"
     # Rename the directory
     mv "package" "$npm_package_name-$shortname"
     # Copy updated module.json
-    echo 2; read a
     cp module.json "$npm_package_name-$shortname"
-    echo 3; read a
     zip -r "$npm_package_name-$shortname.zip" "$npm_package_name-$shortname"
-    echo 4; read a
     cd ../..
     rm -r "releases/$shortname/$npm_package_name-$shortname"
 else
