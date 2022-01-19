@@ -51,7 +51,7 @@ fi
 
 NO_CHECK=$no_check_env npm pack
 
-pack_archive_name="$npm_package_name-$version.tgz"
+pack_archive_name="$npm_package_name-$npm_package_version.tgz"
 
 if [ -f "$pack_archive_name" ]
 then
