@@ -42,28 +42,29 @@ jobs:
       - uses: actions/checkout@v2
       # remove the leading "v" from the version string ("v1.2.3" -> "1.2.3")
       - run: |
-          version="";
+          version=""
           if [ ! "${{inputs.version}}" ]
           then
-            version=`jq -r .version package.json`;
+            version=`jq -r .version package.json`
           else
-            version=`echo ${{ inputs.version }} | cut -c 2-`;
+            version=`echo ${{ inputs.version }} | cut -c 2-`
           fi
           
           if [ ! "${{inputs.prerelease_identifier}}" ]
           then
-            version=$version-${{inputs.prerelease_identifier}};
+            version=$version-${{inputs.prerelease_identifier}}
           fi
 
           if [ ! "${{inputs.name}}" ]
           then
-            name=$version;
+            name=$version
           else
             name=${{inputs.name}}
           fi
-          
+
           echo "version=$version" >> $GITHUB_ENV
           echo "name=$name" >> $GITHUB_ENV
+          echo name: $name, version: $version
       - name: Set outputs # so that they can be reused by caller if necessary
         id: set_outputs
         run: |
@@ -85,8 +86,10 @@ jobs:
         with:
           name: module-manifest
           path: releases/v${{ env.name }}/module.json
+          if-no-files-found: error
       - name: Upload module archive
         uses: actions/upload-artifact@v2
         with:
           name: module-archive
           path: releases/v${{ env.name }}/transfer-stuff-${{ env.name }}.zip
+          if-no-files-found: error
