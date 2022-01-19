@@ -13,6 +13,7 @@ jobs:
         uses: actions/setup-node@v2.5.1
         with:
           node-version: '16'
+      - uses: actions/checkout@v2
       - run: npm install
       - run: npm run build
       - run: npm run packzip -- --set-version ${{ inputs.version }}
