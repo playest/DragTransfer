@@ -65,6 +65,7 @@ then
     mv "package" "$npm_package_name-$shortname"
     # Copy updated module.json
     cp module.json "$npm_package_name-$shortname"
+    git log --pretty=format:'%H' -n 1 > "$npm_package_name-$shortname/hash.txt"
     zip -r "$npm_package_name-$shortname.zip" "$npm_package_name-$shortname"
     cd ../..
     rm -r "releases/$shortname/$npm_package_name-$shortname"
