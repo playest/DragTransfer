@@ -12,7 +12,6 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - run: echo "version=`echo ${{ github.event.release.tag_name }} | cut -c 2-`" >> $GITHUB_ENV # remove the leading v from the version string ("v1.2.3" -> "1.2.3")
       - name: Get module-manifest
         uses: actions/download-artifact@v2
         with:
@@ -21,15 +20,15 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: module-archive
-      - run: ls -R
       - name: Update Release with Files
         uses: ncipollo/release-action@v1
         with:
           allowUpdates: true
+          name: v${{ needs.build.outputs.version }}
           draft: false
           prerelease: false
           token: ${{ secrets.GITHUB_TOKEN }}
-          artifacts: './module.json, ./transfer-stuff-${{ env.version }}.zip'
-          tag: v${{ env.version }}
+          artifacts: './${{ needs.build.outputs.manifest_filename }}, ./${{ needs.build.outputs.archive_filename }}'
+          tag: v${{ needs.build.outputs.version }}
           omitBodyDuringUpdate: true
           omitNameDuringUpdate: true

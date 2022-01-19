@@ -14,7 +14,6 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - run: echo "version=${{ needs.build.outputs.version }}" >> $GITHUB_ENV
       - name: Get module-manifest
         uses: actions/download-artifact@v2
         with:
