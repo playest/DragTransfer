@@ -34,3 +34,6 @@ jobs:
           tag: ${{ needs.build.outputs.version }}
           omitBodyDuringUpdate: true
           omitNameDuringUpdate: true
+          body: |
+            ${{ github.event.release.body }}
+            sha: ${{ GITHUB_SHA }}
