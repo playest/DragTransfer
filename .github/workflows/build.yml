@@ -62,6 +62,7 @@ jobs:
       - name: Set outputs # so that they can be reused by caller if necessary
         id: set_outputs
         run: |
+          echo "::set-output name=name::${{ env.name }}"
           echo "::set-output name=version::${{ env.version }}"
           echo "::set-output name=manifest_filename::module.json"
           echo "::set-output name=archive_filename::transfer-stuff-${{ env.name }}.zip"
