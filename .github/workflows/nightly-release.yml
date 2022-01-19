@@ -8,7 +8,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: ./.github/actions/build@v1
+      - uses: ./.github/workflows/build
         with:
           version: "nightly"
   update-release: # add the artifacts to the release
