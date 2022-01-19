@@ -14,7 +14,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - run: | # remove the leading "v" from the version string ("v1.2.3" -> "1.2.3")
-          if [ "${{ inputs.leadingv }}" ]; then echo "version=`echo ${{ inputs.version }} | cut -c 2-`" >> $GITHUB_ENV; else echo "version=`echo ${{ inputs.version }}" >> $GITHUB_ENV; fi
+          if [ "${{ inputs.leadingv }}" ]; then echo "version=`echo ${{ inputs.version }} | cut -c 2-`" >> $GITHUB_ENV; else echo "version=${{ inputs.version }}" >> $GITHUB_ENV; fi
       - name: Setup Node.js environment
         uses: actions/setup-node@v2.5.1
         with:
