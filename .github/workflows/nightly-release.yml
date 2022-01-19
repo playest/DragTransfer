@@ -8,7 +8,7 @@ jobs:
   build:
     uses: playest/TransferStuff/.github/workflows/build.yml@main # this should be replacable by .github/workflows/build.yml soon, see here: https://github.community/t/ref-head-in-reusable-workflows/203690/34
     with:
-      name: "nightly"
+      shortname: "nightly"
       prerelease_identifier: "nightly"
   update-release: # add the artifacts to the release
     needs: build

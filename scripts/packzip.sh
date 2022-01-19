@@ -3,6 +3,8 @@
 no_check_opt=""
 no_check_env=0
 
+# TODO make a loop to read the arguments, this code needs a specific order for the arguments which doesn't really makes sense
+
 if [ "$1" = "--nocheck" ]
 then
     no_check_opt="--nocheck"
@@ -25,6 +27,16 @@ else
     version="$npm_package_version"
 fi
 
+if [ "$1" = "--set-shortname" ]
+then
+    echo "shortname set to" $2
+    shortname="$2"
+    shift
+    shift
+else
+    shortname=v"$version"
+fi
+
 if [ ! "$npm_package_name" -a ! $version ]
 then
     echo "Since \$npm_package_name is empty it probably means that you tan this script from outside of npm. We will try to find values for the needed npm variables." >&2
@@ -44,18 +56,18 @@ pack_archive_name="$npm_package_name-$npm_package_version.tgz"
 if [ -f "$pack_archive_name" ]
 then
     echo "Pack archive ($pack_archive_name) detected."
-    mkdir -p "releases/v$version/"
+    mkdir -p "releases/$shortname/"
     # Create updated module.json (with version number taken from package.json)
-    ./scripts/replace_version.sh $version "module.json" > "releases/v$version/module.json"
-    tar xzf "$pack_archive_name" -C "releases/v$version/"
-    cd "releases/v$version/"
+    ./scripts/replace_version.sh $version $shortname "module.json" > "releases/$shortname/module.json"
+    tar xzf "$pack_archive_name" -C "releases/$shortname/"
+    cd "releases/$shortname/"
     # Rename the directory
     mv "package" "$npm_package_name-$version"
     # Copy updated module.json
     cp module.json "$npm_package_name-$version"
     zip -r "$npm_package_name-$version.zip" "$npm_package_name-$version"
     cd ../..
-    rm -r "releases/v$version/$npm_package_name-$version"
+    rm -r "releases/$shortname/$npm_package_name-$version"
 else
     echo "Pack archive ($pack_archive_name) not found. Will not do anything."
 fi

@@ -2,8 +2,8 @@ name: Build
 on:
   workflow_call:
     inputs:
-      name:
-        description: "The name of the build, will be equal to the version if not given, will override the version if given"
+      shortname:
+        description: "The shortname of the build, will be equal to the version if not given, will override the version if given"
         required: false
         type: string
         default: ""
@@ -18,9 +18,9 @@ on:
         type: string
         default: ""
     outputs:
-      name:
-        value: ${{ jobs.build.outputs.name }}
-        description: "The name given to the release"
+      shortname:
+        value: ${{ jobs.build.outputs.shortname }}
+        description: "The shortname given to the release"
       version:
         value: ${{ jobs.build.outputs.version }}
         description: "The computed version number"
@@ -34,7 +34,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     outputs:
-      name: ${{ steps.set_outputs.outputs.name }}
+      shortname: ${{ steps.set_outputs.outputs.shortname }}
       version: ${{ steps.set_outputs.outputs.version }}
       manifest_filename: ${{ steps.set_outputs.outputs.manifest_filename }}
       archive_filename: ${{ steps.set_outputs.outputs.archive_filename }}
@@ -55,41 +55,41 @@ jobs:
             version=$version-${{inputs.prerelease_identifier}}
           fi
 
-          if [ ! "${{inputs.name}}" ]
+          if [ ! "${{inputs.shortname}}" ]
           then
-            name=$version
+            shortname=v$version
           else
-            name=${{inputs.name}}
+            shortname=${{inputs.shortname}}
           fi
 
           echo "version=$version" >> $GITHUB_ENV
-          echo "name=$name" >> $GITHUB_ENV
-          echo name: $name, version: $version
+          echo "shortname=$shortname" >> $GITHUB_ENV
+          echo shortname: $shortname, version: $version
       - name: Set outputs # so that they can be reused by caller if necessary
         id: set_outputs
         run: |
-          echo "::set-output name=name::${{ env.name }}"
+          echo "::set-output name=shortname::${{ env.shortname }}"
           echo "::set-output name=version::${{ env.version }}"
           echo "::set-output name=manifest_filename::module.json"
-          echo "::set-output name=archive_filename::transfer-stuff-${{ env.name }}.zip"
+          echo "::set-output name=archive_filename::transfer-stuff-${{ env.shortname }}.zip"
       - name: Setup Node.js environment
         uses: actions/setup-node@v2.5.1
         with:
           node-version: '16'
       - run: npm install
       - run: npm run build
-      - run: npm run packzip -- --set-version ${{ env.name }}
+      - run: npm run packzip -- --set-version ${{ env.version }} --set-shortname ${{ env.shortname }}
         env:
           NO_CHECK: 1
       - name: Upload module manifest
         uses: actions/upload-artifact@v2
         with:
           name: module-manifest
-          path: releases/v${{ env.name }}/module.json
+          path: releases/${{ env.shortname }}/module.json
           if-no-files-found: error
       - name: Upload module archive
         uses: actions/upload-artifact@v2
         with:
           name: module-archive
-          path: releases/v${{ env.name }}/transfer-stuff-${{ env.name }}.zip
+          path: releases/${{ env.shortname }}/transfer-stuff-${{ env.shortname }}.zip
           if-no-files-found: error
