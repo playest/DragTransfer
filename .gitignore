@@ -1,4 +1,6 @@
 *.js
 *.tgz
 *.zip
-/releases
+/releases/
+/node_modules/
+/.vscode/
