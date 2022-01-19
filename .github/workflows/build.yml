@@ -1,0 +1,31 @@
+name: Build
+on:
+  workflow_call:
+    inputs:
+      version: # without the leading "v"
+        required: true
+        type: string
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v2.5.1
+        with:
+          node-version: '16'
+      - uses: actions/checkout@v2
+      - run: npm install
+      - run: npm run build
+      - run: npm run packzip -- --set-version ${{ inputs.version }}
+        env:
+          NO_CHECK: 1
+      - name: Upload module manifest
+        uses: actions/upload-artifact@v2
+        with:
+          name: module-manifest
+          path: releases/v${{ inputs.version }}/module.json
+      - name: Upload module archive
+        uses: actions/upload-artifact@v2
+        with:
+          name: module-archive
+          path: releases/v${{ inputs.version }}/transfer-stuff-${{ inputs.version }}.zip

@@ -8,27 +8,9 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - run: echo "version=nightly" >> $GITHUB_ENV
-      - name: Setup Node.js environment
-        uses: actions/setup-node@v2.5.1
+      - uses: ./.github/actions/build@v1
         with:
-          node-version: '16'
-      - uses: actions/checkout@v2
-      - run: npm install
-      - run: npm run build
-      - run: npm run packzip -- --set-version ${{ env.version }}
-        env:
-          NO_CHECK: 1
-      - name: Upload module manifest
-        uses: actions/upload-artifact@v2
-        with:
-          name: module-manifest
-          path: releases/v${{ env.version }}/module.json
-      - name: Upload module archive
-        uses: actions/upload-artifact@v2
-        with:
-          name: module-archive
-          path: releases/v${{ env.version }}/transfer-stuff-${{ env.version }}.zip
+          version: "nightly"
   update-release: # add the artifacts to the release
     needs: build
     runs-on: ubuntu-latest
