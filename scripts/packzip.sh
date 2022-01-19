@@ -62,12 +62,12 @@ then
     tar xzf "$pack_archive_name" -C "releases/$shortname/"
     cd "releases/$shortname/"
     # Rename the directory
-    mv "package" "$npm_package_name-$version"
+    mv "package" "$npm_package_name-$shortname"
     # Copy updated module.json
-    cp module.json "$npm_package_name-$version"
-    zip -r "$npm_package_name-$version.zip" "$npm_package_name-$version"
+    cp module.json "$npm_package_name-$shortname"
+    zip -r "$npm_package_name-$shortname.zip" "$npm_package_name-$shortname"
     cd ../..
-    rm -r "releases/$shortname/$npm_package_name-$version"
+    rm -r "releases/$shortname/$npm_package_name-$shortname"
 else
     echo "Pack archive ($pack_archive_name) not found. Will not do anything."
 fi
