@@ -27,6 +27,7 @@ jobs:
         id: get_release
         with:
           tag_name: ${{ needs.build.outputs.version }}
+          throwing: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Prepare release body Files
