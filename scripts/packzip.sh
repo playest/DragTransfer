@@ -46,12 +46,12 @@ then
     shift
     shift
 else
-    shortname=v"$npm_package_version"
+    shortname=v"$version"
 fi
 
 NO_CHECK=$no_check_env npm pack
 
-pack_archive_name="$npm_package_name-$npm_package_version.tgz"
+pack_archive_name="$npm_package_name-$version.tgz"
 
 if [ -f "$pack_archive_name" ]
 then
@@ -60,7 +60,7 @@ then
     tar xzf "$pack_archive_name" -C "releases/$shortname/"
     # Create updated module.json (with version number taken from package.json)
     echo 1; read a
-    ./scripts/replace_version.sh "$npm_package_version" "$shortname" "module.json" > "releases/$shortname/module.json"
+    ./scripts/replace_version.sh "$version" "$shortname" "module.json" > "releases/$shortname/module.json"
     cd "releases/$shortname/"
     # Rename the directory
     mv "package" "$npm_package_name-$shortname"
