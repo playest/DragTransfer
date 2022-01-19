@@ -12,7 +12,15 @@ on:
         type: boolean
         default: true
     outputs:
-      version: ${{ jobs.build.outputs.version }}
+      version:
+        value: ${{ jobs.build.outputs.version }}
+        description: "The computed version number"
+      manifest_filename:
+        value: ${{ jobs.build.outputs.manifest_filename }}
+        description: "The name of the manifest artifact after download"
+      archive_filename:
+        value: ${{ jobs.build.outputs.archive_filename }}
+        description: "The name of the archive artifact after download"
 jobs:
   build:
     runs-on: ubuntu-latest
