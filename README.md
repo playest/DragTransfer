@@ -25,13 +25,13 @@ There is multiple way to install this module:
     - Find the [nightly release](https://github.com/playest/TransferStuff/releases/tag/nightly) on the [release page](https://github.com/playest/TransferStuff/releases)
     - Copy the link to the "module.json" file into "Add-on Modules / Install Module / Manifest URL"
     - It may be **unstable**
-    - You will get updates automatically this way
+    - You will **not** get updates automatically this way until a new stable version is released (because FoundryVTT does not have a comvenient way to have multiple update channels)
 - The **git way**
     - Clone this repo into `<FoundryVTT Install Directory>/Data/modules/` and [build it](DEV.md)
     - It may be **unstable**
     - You will **not** get updates automatically this way
 
-In this section "automatic updates" refers to the update button in the "Add-on Modules" tab.
+In this section "automatic updates" refers to the update button in the "Add-on Modules" tab. When is says that you "will **not** get updates automatically" you can still force an update by uninstalling the module and re-installing it.
 
 # Features
 
