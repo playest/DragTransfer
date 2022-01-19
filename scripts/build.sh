@@ -1,3 +1,4 @@
 #! /bin/sh
 
-tsc -p .
+npx tsc -p .
+npx sass .:.

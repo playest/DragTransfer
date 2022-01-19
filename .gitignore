@@ -1,6 +1,7 @@
 *.js
 *.tgz
 *.zip
+*.map
 /releases/
 /node_modules/
 /.vscode/
