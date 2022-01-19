@@ -26,7 +26,7 @@ jobs:
         uses: joutvhu/get-release@v1
         id: get_release
         with:
-          tag_name: vnightly
+          tag_name: nightly
           throwing: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
