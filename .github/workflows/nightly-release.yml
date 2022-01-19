@@ -26,6 +26,8 @@ jobs:
         run: |
           cat $GITHUB_EVENT_PATH
           echo "==="
+          echo ${{ github.event.release.body }}
+          echo "==="
           jq -r '.client_payload.github.event.release.body' $GITHUB_EVENT_PATH | grep -v '^sha:' > release_body.md
           echo sha: ${{ github.sha }} >> release_body.md
           cat release_body.md
