@@ -15,7 +15,7 @@ There is multiple way to install this module:
 - The **latest way**
     - Copy [this URL](https://github.com/playest/TransferStuff/releases/latest/download/module.json) into "Add-on Modules / Install Module / Manifest URL"
     - It should be stable
-    - You will **not** get updates automatically this way
+    - You will get updates automatically this way
 - The **old way**
     - Choose your version on the [release page](https://github.com/playest/TransferStuff/releases)
     - Copy the link to the "module.json" file into "Add-on Modules / Install Module / Manifest URL"
