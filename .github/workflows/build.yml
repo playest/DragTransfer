@@ -50,7 +50,7 @@ jobs:
             version=`echo ${{ inputs.version }} | cut -c 2-`
           fi
           
-          if [ ! "${{inputs.prerelease_identifier}}" ]
+          if [ "${{inputs.prerelease_identifier}}" ]
           then
             version=$version-${{inputs.prerelease_identifier}}
           fi
