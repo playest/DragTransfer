@@ -6,12 +6,9 @@ on:
       - main
 jobs:
   build:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - uses: ./.github/workflows/build
-        with:
-          version: "nightly"
+    uses: ./.github/workflows/build@main
+    with:
+      version: "nightly"
   update-release: # add the artifacts to the release
     needs: build
     runs-on: ubuntu-latest
