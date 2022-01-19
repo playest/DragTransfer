@@ -22,13 +22,16 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: module-archive
+      - name: Get release
+        id: get_release
+        uses: bruceadams/get-release@v1.2.3
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
       - name: Prepare release body Files
         run: |
-          cat $GITHUB_EVENT_PATH
+          echo ${{ steps.get_release.outputs.body }}
           echo "==="
-          echo ${{ github.event.release.body }}
-          echo "==="
-          jq -r '.client_payload.github.event.release.body' $GITHUB_EVENT_PATH | grep -v '^sha:' > release_body.md
+          echo ${{ steps.get_release.outputs.body }} | grep -v '^sha:' > release_body.md
           echo sha: ${{ github.sha }} >> release_body.md
           cat release_body.md
       - name: Update Release with Files
