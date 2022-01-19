@@ -49,14 +49,19 @@ jobs:
           else
             version=`echo ${{ inputs.version }} | cut -c 2-`;
           fi
+          
           if [ ! "${{inputs.prerelease_identifier}}" ]
           then
             version=$version-${{inputs.prerelease_identifier}};
           fi
+
           if [ ! "${{inputs.name}}" ]
           then
             name=$version;
+          else
+            name=${{inputs.name}}
           fi
+          
           echo "version=$version" >> $GITHUB_ENV
           echo "name=$name" >> $GITHUB_ENV
       - name: Set outputs # so that they can be reused by caller if necessary
