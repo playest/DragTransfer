@@ -78,7 +78,7 @@ jobs:
           node-version: '16'
       - run: npm install
       - run: npm run build
-      - run: npm run packzip -- --set-version ${{ env.version }}
+      - run: npm run packzip -- --set-version ${{ env.name }}
         env:
           NO_CHECK: 1
       - name: Upload module manifest
