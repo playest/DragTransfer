@@ -27,16 +27,6 @@ else
     version="$npm_package_version"
 fi
 
-if [ "$1" = "--set-shortname" ]
-then
-    echo "shortname set to" $2
-    shortname="$2"
-    shift
-    shift
-else
-    shortname=v"$version"
-fi
-
 if [ ! "$npm_package_name" -a ! $version ]
 then
     echo "Since \$npm_package_name is empty it probably means that you tan this script from outside of npm. We will try to find values for the needed npm variables." >&2
@@ -49,6 +39,16 @@ then
     fi
 fi
 
+if [ "$1" = "--set-shortname" ]
+then
+    echo "shortname set to" $2
+    shortname="$2"
+    shift
+    shift
+else
+    shortname=v"$npm_package_version"
+fi
+
 NO_CHECK=$no_check_env npm pack
 
 pack_archive_name="$npm_package_name-$npm_package_version.tgz"
@@ -59,13 +59,17 @@ then
     mkdir -p "releases/$shortname/"
     tar xzf "$pack_archive_name" -C "releases/$shortname/"
     # Create updated module.json (with version number taken from package.json)
-    ./scripts/replace_version.sh "$version" "$shortname" "module.json" > "releases/$shortname/module.json"
+    echo 1; read a
+    ./scripts/replace_version.sh "$npm_package_version" "$shortname" "module.json" > "releases/$shortname/module.json"
     cd "releases/$shortname/"
     # Rename the directory
     mv "package" "$npm_package_name-$shortname"
     # Copy updated module.json
+    echo 2; read a
     cp module.json "$npm_package_name-$shortname"
+    echo 3; read a
     zip -r "$npm_package_name-$shortname.zip" "$npm_package_name-$shortname"
+    echo 4; read a
     cd ../..
     rm -r "releases/$shortname/$npm_package_name-$shortname"
 else
