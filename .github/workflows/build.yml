@@ -26,8 +26,8 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       version: ${{ steps.set_outputs.outputs.version }}
-      manifest_filename: ${{ steps.set_outputs.outputs.version }}
-      archive_filename: ${{ steps.set_outputs.outputs.version }}
+      manifest_filename: ${{ steps.set_outputs.outputs.manifest_filename }}
+      archive_filename: ${{ steps.set_outputs.outputs.archive_filename }}
     steps:
       - run: | # remove the leading "v" from the version string ("v1.2.3" -> "1.2.3")
           if [ "${{ inputs.leadingv }}" = "true" ]; then echo "version=`echo ${{ inputs.version }} | cut -c 2-`" >> $GITHUB_ENV; else echo "version=${{ inputs.version }}" >> $GITHUB_ENV; fi
