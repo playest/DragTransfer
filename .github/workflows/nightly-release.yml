@@ -36,4 +36,4 @@ jobs:
           omitNameDuringUpdate: true
           body: |
             ${{ github.event.release.body }}
-            sha: ${{ GITHUB_SHA }}
+            sha: ${{ github.sha }}
