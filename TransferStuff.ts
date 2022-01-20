@@ -12,6 +12,7 @@ import type { FoundryVTT } from './fvtt';
 import { registerSettings } from './settings.js';
 
 const MODNAME = 'TRANSFERSTUFF';
+const moduleName = 'transfer-stuff'; // the value in module.json/name
 
 (function() {
     function isAlt() {
@@ -23,12 +24,12 @@ const MODNAME = 'TRANSFERSTUFF';
     function checkCompatible(actorTypeName1: FoundryVTT.ActorType, actorTypeName2: FoundryVTT.ActorType, item: FoundryVTT.FutureItem) {
         console.info('TransferStuff | Check Compatibility: Dragging Item:"' + String(item.data.type) + '" from sourceActor.data.type:"' + String(actorTypeName1) + '" to dragTarget.data.type:"' + String(actorTypeName2) + '".');
 
-        const transferBetweenSameTypeActors = game.settings.get('TransferStuff', 'actorTransferSame');
+        const transferBetweenSameTypeActors = game.settings.get(moduleName, 'actorTransferSame');
         if(transferBetweenSameTypeActors && actorTypeName1 == actorTypeName2) {
             return true;
         }
         try {
-            const transferPairs = JSON.parse("{" + game.settings.get('TransferStuff', 'actorTransferPairs') + "}");
+            const transferPairs = JSON.parse("{" + game.settings.get(moduleName, 'actorTransferPairs') + "}");
             const withActorTypeName1 = transferPairs[actorTypeName1];
             const withActorTypeName2 = transferPairs[actorTypeName2];
             if(Array.isArray(withActorTypeName1) && withActorTypeName1.indexOf(actorTypeName2) !== -1) return true;
@@ -209,11 +210,11 @@ const MODNAME = 'TRANSFERSTUFF';
                     const originalQuantity = futureItem.data.data.quantity;
                     const targetActorId = targetActor.data._id;
                     const sourceActorId = futureItem.actorId;
-                    if(game.settings.get('TransferStuff', 'enableCurrencyTransfer') && futureItem.data.name === game.i18n.localize(MODNAME + ".currency")) {
+                    if(game.settings.get(moduleName, 'enableCurrencyTransfer') && futureItem.data.name === game.i18n.localize(MODNAME + ".currency")) {
                         showCurrencyTransferDialog(sourceSheet, targetSheet);
                         return false;
                     }
-                    else if(game.settings.get('TransferStuff', 'enableItemTransfer') && originalQuantity >= 1) {
+                    else if(game.settings.get(moduleName, 'enableItemTransfer') && originalQuantity >= 1) {
                         showItemTransferDialog(originalQuantity, sourceSheet, targetSheet, futureItem.data._id, futureItem);
                         return false;
                     }
