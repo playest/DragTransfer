@@ -2,19 +2,22 @@
 
 This section contains some pointer about how to do some common tasks.
 
+## Build
+
+- `npm install`
+- `./scripts/build.sh`
+
 ## Change version number
 
 Version number must be updated in:
-- /module.json
-    - version field
-    - url in the manifest field
-    - url in the download field
 - /package.json
     - version field
 - /package-lock.json
     - version field (should probably be updated by running `npm install`)
 
-`/scripts/check_same_version.sh` checks that all version numbers are identical.
+`/scripts/check_same_version_light.sh` checks that all version numbers are identical.
+
+Version number in module.json is set to `{{version}}` which is a special string that the release workflow automatically replace when a release is made. The same is true for `{{shortname}}`
 
 ## Make a release
 

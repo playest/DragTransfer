@@ -9,7 +9,7 @@ You should have received a copy of the GNU General Public License along with Tra
 */
 
 export function registerSettings() {
-    const moduleName = 'TransferStuff';
+    const moduleName = 'transfer-stuff';
     const MODNAME = 'TRANSFERSTUFF';
 
     game.settings.register(moduleName, 'enableItemTransfer', {
@@ -44,6 +44,7 @@ export function registerSettings() {
         hint: game.i18n.localize(MODNAME + ".actorTransferPairsHint"),
         scope: 'world',
         config: true,
+        restricted: true,
         type: String,
         default: "",
         onChange: (value: string) => {
