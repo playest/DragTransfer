@@ -44,7 +44,6 @@ export function registerSettings() {
         hint: game.i18n.localize(MODNAME + ".actorTransferPairsHint"),
         scope: 'world',
         config: true,
-        restricted: true,
         type: String,
         default: "",
         onChange: (value: string) => {
