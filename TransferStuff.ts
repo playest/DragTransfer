@@ -210,7 +210,7 @@ const moduleName = 'transfer-stuff'; // the value in module.json/name
                     const originalQuantity = futureItem.data.data.quantity;
                     const targetActorId = targetActor.data._id;
                     const sourceActorId = futureItem.actorId;
-                    if(game.settings.get(moduleName, 'enableCurrencyTransfer') && futureItem.data.name === game.i18n.localize(MODNAME + ".currency")) {
+                    if(game.settings.get(moduleName, 'enableCurrencyTransfer') && futureItem.data.name === "Currency") {
                         showCurrencyTransferDialog(sourceSheet, targetSheet);
                         return false;
                     }
