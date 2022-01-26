@@ -109,7 +109,7 @@ const moduleName = 'transfer-stuff'; // the value in module.json/name
         }
         else {
             for(let c of currencies) {
-                const amount = parseInt(html.find("." + c).val(), 10);
+                const amount = parseInt(html.find("." + c + " input").val(), 10);
                 const key = "data.currency." + c;
                 sourceSheet.actor.update({ [key]: sourceSheet.actor.data.data.currency[c] - amount });
                 targetSheet.actor.update({ [key]: targetSheet.actor.data.data.currency[c] + amount }); // key is between [] to force its evaluation
@@ -146,17 +146,24 @@ const moduleName = 'transfer-stuff'; // the value in module.json/name
         transferDialog.render(true);
     }
 
+    function disabledIfZero(n: number): "disabled" | "" {
+        if(n === 0) {
+            return "disabled";
+        }
+        return "";
+    }
+
     function showCurrencyTransferDialog(sourceSheet: FoundryVTT.Sheet, targetSheet: FoundryVTT.Sheet) {
         let transferDialog = new Dialog({
             title: game.i18n.localize(MODNAME + ".howMuchCurrency"),
             content: `
               <form class="transferstuff currency">
                 <div class="form-group">
-                  <span class="currency pp"><i class="fas fa-coins"></i><span>Platinum: </span><input type="number" value="0" min="0" max="${sourceSheet.actor.data.data.currency.pp}" /></span>
-                  <span class="currency gp"><i class="fas fa-coins"></i><span>Gold: </span><input type="number" value="0" min="0" max="${sourceSheet.actor.data.data.currency.gp}" /></span>
-                  <span class="currency ep"><i class="fas fa-coins"></i><span>Electrum: </span><input type="number" value="0" min="0" max="${sourceSheet.actor.data.data.currency.ep}" /></span>
-                  <span class="currency sp"><i class="fas fa-coins"></i><span>Silver: </span><input type="number" value="0" min="0" max="${sourceSheet.actor.data.data.currency.sp}" /></span>
-                  <span class="currency cp"><i class="fas fa-coins"></i><span>Copper: </span><input type="number" value="0" min="0" max="${sourceSheet.actor.data.data.currency.cp}" /></span>
+                  <span class="currency pp"><i class="fas fa-coins"></i><span>Platinum: </span><input type="number" value="0" min="0" ${disabledIfZero(sourceSheet.actor.data.data.currency.pp)} max="${sourceSheet.actor.data.data.currency.pp}" /></span>
+                  <span class="currency gp"><i class="fas fa-coins"></i><span>Gold: </span><input type="number" value="0" min="0" ${disabledIfZero(sourceSheet.actor.data.data.currency.gp)} max="${sourceSheet.actor.data.data.currency.gp}" /></span>
+                  <span class="currency ep"><i class="fas fa-coins"></i><span>Electrum: </span><input type="number" value="0" min="0" ${disabledIfZero(sourceSheet.actor.data.data.currency.ep)} max="${sourceSheet.actor.data.data.currency.ep}" /></span>
+                  <span class="currency sp"><i class="fas fa-coins"></i><span>Silver: </span><input type="number" value="0" min="0" ${disabledIfZero(sourceSheet.actor.data.data.currency.sp)} max="${sourceSheet.actor.data.data.currency.sp}" /></span>
+                  <span class="currency cp"><i class="fas fa-coins"></i><span>Copper: </span><input type="number" value="0" min="0" ${disabledIfZero(sourceSheet.actor.data.data.currency.cp)} max="${sourceSheet.actor.data.data.currency.cp}" /></span>
                 </div>
               </form>`,
             buttons: {
