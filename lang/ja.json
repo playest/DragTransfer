@@ -1,0 +1,20 @@
+{
+    "Localization Provided By": "touge",
+    "TRANSFERSTUFF.actorTransferSame": "同種のアクター間での転送を許可する",
+    "TRANSFERSTUFF.actorTransferSameHint": "無効にした場合、手動でペアを定義する必要があります。",
+    "TRANSFERSTUFF.actorTransferPairs": "対応するアクタータイプ：",
+    "TRANSFERSTUFF.actorTransferPairsHint": "転送を許可するアクタータイプをJSONキーと値のペアで定義します。このモジュールは、標準では同種のアクターシート間でしか動作しません。しかしゲームシステムによっては、ほかの組み合わせでも動作させたいこともあるでしょう。【例1】\"character\":\"synthetic\",\"synthetic\":\"vehicles\",\"vehicles\":\"character\"　【例2（DnD5e用）】\"character\":\"vehicle\",\"vehicle\":\"character\"　これでキャラクターと乗り物間でアイテムの転送が可能です。また値として複数のアクタータイプを指定することもできます。【例3】\"character\":[\"vehicle\", \"character\"],\"vehicle\":\"character\"　この場合、「キャラクターから乗り物」「キャラクターからキャラクター」「乗り物からキャラクター」への転送が許可されますが、乗り物から乗り物へは移動できません（「同種のアクター間～」チェックボックスはオフにしてください）。",
+    "TRANSFERSTUFF.notEnoughCurrency": "次の貨幣が不足しています",
+    "TRANSFERSTUFF.howManyItem": "幾つのアイテムを受け渡しますか？",
+    "TRANSFERSTUFF.one": "一つ",
+    "TRANSFERSTUFF.half": "半分",
+    "TRANSFERSTUFF.max": "最大",
+    "TRANSFERSTUFF.stackItems": "同種のアイテムをスタックさせる",
+    "TRANSFERSTUFF.transfer": "転送",
+    "TRANSFERSTUFF.howMuchCurrency": "どれだけのお金を受け渡しますか？",
+    "TRANSFERSTUFF.currency": "貨幣",
+    "TRANSFERSTUFF.enableCurrencyTransfer": "所持金の転送を有効にする",
+    "TRANSFERSTUFF.enableCurrencyTransferHint": "有効にすると“貨幣”という名前のオブジェクトを移動させたときに、オブジェクトそのものでなく所持金を転送するダイアログが表示されます。",
+    "TRANSFERSTUFF.enableItemTransfer": "アイテムの転送を有効にする",
+    "TRANSFERSTUFF.enableItemTransferHint": "アイテム転送はこのモジュールのメイン機能ですが、無効にもできます。アイテムの移動中に［alt］キーを押すことで、一時的に転送機能を無効にできることもお忘れなく。"
+}
