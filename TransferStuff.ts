@@ -121,7 +121,7 @@ const moduleName = 'transfer-stuff'; // the value in module.json/name
         let transferDialog = new Dialog({
             title: 'How many items do you want to move?',
             content: `
-              <form class="transferstuff">
+              <form class="transferstuff item">
                 <div class="form-group">
                   <input type="number" class="transferedQuantity" value="${originalQuantity}" min="0" max="${originalQuantity}" />
                   <button onclick="this.parentElement.querySelector('.transferedQuantity').value = '1'">${game.i18n.localize(MODNAME + ".one")}</button>
@@ -150,13 +150,13 @@ const moduleName = 'transfer-stuff'; // the value in module.json/name
         let transferDialog = new Dialog({
             title: game.i18n.localize(MODNAME + ".howMuchCurrency"),
             content: `
-              <form class="transferstuff">
+              <form class="transferstuff currency">
                 <div class="form-group">
-                  Platinum: <input type="number" class="currency pp" value="0" min="0" max="${sourceSheet.actor.data.data.currency.pp}" />
-                  Gold: <input type="number" class="currency gp" value="0" min="0" max="${sourceSheet.actor.data.data.currency.gp}" />
-                  Electrum: <input type="number" class="currency ep" value="0" min="0" max="${sourceSheet.actor.data.data.currency.ep}" />
-                  Silver: <input type="number" class="currency sp" value="0" min="0" max="${sourceSheet.actor.data.data.currency.sp}" />
-                  Copper: <input type="number" class="currency cp" value="0" min="0" max="${sourceSheet.actor.data.data.currency.cp}" />
+                  <span class="currency pp"><i class="fas fa-coins"></i><span>Platinum: </span><input type="number" value="0" min="0" max="${sourceSheet.actor.data.data.currency.pp}" /></span>
+                  <span class="currency gp"><i class="fas fa-coins"></i><span>Gold: </span><input type="number" value="0" min="0" max="${sourceSheet.actor.data.data.currency.gp}" /></span>
+                  <span class="currency ep"><i class="fas fa-coins"></i><span>Electrum: </span><input type="number" value="0" min="0" max="${sourceSheet.actor.data.data.currency.ep}" /></span>
+                  <span class="currency sp"><i class="fas fa-coins"></i><span>Silver: </span><input type="number" value="0" min="0" max="${sourceSheet.actor.data.data.currency.sp}" /></span>
+                  <span class="currency cp"><i class="fas fa-coins"></i><span>Copper: </span><input type="number" value="0" min="0" max="${sourceSheet.actor.data.data.currency.cp}" /></span>
                 </div>
               </form>`,
             buttons: {

@@ -8,6 +8,61 @@ TransferStuff is distributed in the hope that it will be useful, but WITHOUT ANY
 You should have received a copy of the GNU General Public License along with TransferStuff. If not, see <https://www.gnu.org/licenses/>. 
 */
 
-.transferstuff input:invalid {
-    background-color: red;
+.dialog .transferstuff {
+    input:invalid {
+        background-color: red;
+    }
+
+    input[type="number"]::-webkit-inner-spin-button,
+    input[type="number"]::-webkit-outer-spin-button {
+        -webkit-appearance: auto;
+    }
+
+    &.item {
+        .form-group > * {
+            flex: none;
+            width: auto;
+            margin-right: 0.2em;
+            &:last-child {
+                margin-right: 0;
+            }
+        }
+
+        .transferedQuantity {
+            width: 8em;
+        }
+    }
+
+    &.currency {
+        .form-group {
+            flex-wrap: nowrap;
+        }
+        .currency {
+            margin-right: 0.2em;
+            flex: unset;
+            &:last-child {
+                margin-right: 0;
+            }
+            .fa-coins {
+                margin-right: 0.2em;
+                text-shadow: 0px 1px 1px black; // to create a "border" around the coins so that it's more visible against the background
+            }
+            &.pp .fa-coins {
+                color: #E5E4E2;
+            }
+            &.gp .fa-coins {
+                color: #FFD700;
+            }
+            &.ep .fa-coins {
+                color: #F2E279;
+            }
+            &.sp .fa-coins {
+                color: #C0C0C0;
+            }
+            &.cp .fa-coins {
+                color: #B87333;
+            }
+        }
+        flex: 1;
+    }
 }

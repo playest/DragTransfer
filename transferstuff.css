@@ -1,1 +1,61 @@
-.transferstuff input:invalid{background-color:red}
+/*
+This file is part of TransferStuff.
+
+TransferStuff is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+
+TransferStuff is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along with TransferStuff. If not, see <https://www.gnu.org/licenses/>. 
+*/
+.dialog .transferstuff input:invalid {
+  background-color: red;
+}
+.dialog .transferstuff input[type=number]::-webkit-inner-spin-button,
+.dialog .transferstuff input[type=number]::-webkit-outer-spin-button {
+  -webkit-appearance: auto;
+}
+.dialog .transferstuff.item .form-group > * {
+  flex: none;
+  width: auto;
+  margin-right: 0.2em;
+}
+.dialog .transferstuff.item .form-group > *:last-child {
+  margin-right: 0;
+}
+.dialog .transferstuff.item .transferedQuantity {
+  width: 8em;
+}
+.dialog .transferstuff.currency {
+  flex: 1;
+}
+.dialog .transferstuff.currency .form-group {
+  flex-wrap: nowrap;
+}
+.dialog .transferstuff.currency .currency {
+  margin-right: 0.2em;
+  flex: unset;
+}
+.dialog .transferstuff.currency .currency:last-child {
+  margin-right: 0;
+}
+.dialog .transferstuff.currency .currency .fa-coins {
+  margin-right: 0.2em;
+  text-shadow: 0px 1px 1px black;
+}
+.dialog .transferstuff.currency .currency.pp .fa-coins {
+  color: #E5E4E2;
+}
+.dialog .transferstuff.currency .currency.gp .fa-coins {
+  color: #FFD700;
+}
+.dialog .transferstuff.currency .currency.ep .fa-coins {
+  color: #F2E279;
+}
+.dialog .transferstuff.currency .currency.sp .fa-coins {
+  color: #C0C0C0;
+}
+.dialog .transferstuff.currency .currency.cp .fa-coins {
+  color: #B87333;
+}
+
+/*# sourceMappingURL=transferstuff.css.map */
